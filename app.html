@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PedMitra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F9FA; --white:#fff; --forest:#14432E; --forest-2:#0E3122;
+  --green:#2E9E63; --green-h:#268354; --green-soft:#EAF5EF;
+  --body:#64748B; --body-2:#475569; --line:#E4EAE7; --line-2:#D3DCD7;
+  --amber:#D97706; --amber-soft:#FDF3E4; --red:#DC2626; --grey:#94A3B8;
+  --disp:'Plus Jakarta Sans',system-ui,sans-serif;
+  --text:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--body);font-family:var(--text);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,.d{font-family:var(--disp);color:var(--forest);letter-spacing:-.02em}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--disp);font-weight:700;font-size:15px;padding:14px 24px;border-radius:8px;background:var(--green);color:#fff;border:1px solid var(--green);cursor:pointer;transition:background .15s}
+.btn:hover:not(:disabled){background:var(--green-h);border-color:var(--green-h)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.line{background:transparent;color:var(--forest);border-color:var(--line-2)}
+.btn.line:hover:not(:disabled){background:var(--forest);border-color:var(--forest);color:#fff}
+.btn.dark{background:var(--forest);border-color:var(--forest)}
+.btn.wide{width:100%}
+.btn.sm{padding:9px 16px;font-size:13.5px}
+.btn.wa{background:#25D366;border-color:#25D366}
+.btn.wa:hover{background:#1FB456;border-color:#1FB456}
+
+input,select,textarea{width:100%;font-family:var(--text);font-size:15.5px;color:var(--forest);background:var(--white);border:1px solid var(--line-2);border-radius:8px;padding:13px 14px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--green)}
+label{display:block;font-family:var(--disp);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--forest);margin-bottom:7px}
+.field{margin-bottom:18px}
+.hint{font-size:13px;color:var(--grey);margin-top:6px}
+
+/* shell */
+header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;gap:14px;height:68px;max-width:900px;margin:0 auto;padding:0 18px}
+
+
+.hd .sp{flex:1}
+.who{font-size:13px;color:var(--grey)}
+
+main{max-width:900px;margin:0 auto;padding:26px 18px 110px}
+.view{display:none}
+.view.on{display:block}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:45;background:rgba(255,255,255,.97);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:11px 4px 12px;font-family:var(--disp);font-weight:700;font-size:11px;color:var(--grey)}
+nav.tabs a.on{color:var(--green)}
+nav.tabs a svg{width:21px;height:21px}
+nav.tabs a.plant{color:var(--forest)}
+
+.card{background:var(--white);border:1px solid var(--line);border-radius:12px}
+.pad{padding:22px}
+.mb{margin-bottom:18px}
+
+.title{font-size:26px;font-weight:800;line-height:1.2}
+.kick{font-family:var(--disp);font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:8px}
+.sub{font-size:15px;margin-top:6px}
+
+.msg{padding:13px 16px;border-radius:8px;font-size:14.5px;margin-bottom:16px;display:none}
+.msg.on{display:block}
+.msg.err{background:#FEF2F2;color:#991B1B;border:1px solid #FECACA}
+.msg.ok{background:var(--green-soft);color:#1B6B45;border:1px solid #BBE3CD}
+.msg.warn{background:var(--amber-soft);color:#96570A;border:1px solid #F5DDB4}
+
+/* rows */
+.row{display:flex;align-items:center;gap:14px;padding:15px 18px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row .no{font-family:var(--disp);font-weight:800;font-size:14px;color:var(--forest);width:56px;flex:none}
+.row .mid{flex:1;min-width:0}
+.row .mid b{display:block;font-family:var(--disp);font-weight:700;color:var(--forest);font-size:16px}
+.row .mid span{display:block;font-size:13px;margin-top:1px}
+.row .mid em{font-style:normal;color:var(--amber);font-weight:600}
+.head{padding:14px 18px;border-bottom:1px solid var(--line);background:var(--green-soft);font-family:var(--disp);font-weight:700;font-size:13.5px;color:#1B6B45}
+.empty{padding:40px 22px;text-align:center}
+.empty b{display:block;font-family:var(--disp);font-weight:800;color:var(--forest);font-size:18px;margin-bottom:6px}
+.empty span{font-size:14.5px}
+
+.tag{display:inline-flex;align-items:center;gap:6px;background:var(--green-soft);color:#1B6B45;border-radius:6px;padding:5px 11px;font-family:var(--disp);font-size:12px;font-weight:700;white-space:nowrap}
+.tag i{width:7px;height:7px;border-radius:50%;background:var(--green);display:block}
+.tag.w{background:var(--amber-soft);color:#96570A} .tag.w i{background:var(--amber)}
+.tag.b{background:#FEF2F2;color:#991B1B} .tag.b i{background:var(--red)}
+.tag.x{background:#F1F5F4;color:#64748B} .tag.x i{background:var(--grey)}
+
+.stats{display:flex;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--white)}
+.stats div{flex:1;padding:16px 14px;border-right:1px solid var(--line);text-align:center}
+.stats div:last-child{border-right:0}
+.stats b{display:block;font-family:var(--disp);font-weight:800;font-size:22px;color:var(--forest);letter-spacing:-.02em}
+.stats span{display:block;font-size:11.5px;color:var(--grey);margin-top:2px}
+
+#map{height:calc(100vh - 200px);min-height:380px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.maplibregl-popup-content{font-family:var(--text);border-radius:10px;padding:12px 14px;border:1px solid var(--line)}
+.pp b{display:block;font-family:var(--disp);font-weight:800;color:var(--forest);font-size:15px}
+.pp span{display:block;font-size:13px;color:var(--body);margin:2px 0 8px}
+
+.shot{width:100%;height:220px;object-fit:cover;border-radius:12px;border:1px solid var(--line);display:block;background:#DDE9E0}
+.drop{height:200px;border:1.5px dashed var(--line-2);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:var(--white);cursor:pointer;text-align:center;padding:16px}
+.drop b{font-family:var(--disp);font-weight:700;color:var(--forest);font-size:15px}
+.drop span{font-size:13px;color:var(--grey)}
+
+.dl{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-top:1px solid var(--line);font-size:14.5px}
+.dl dt{color:var(--grey)} .dl dd{color:var(--forest);font-weight:500;text-align:right}
+
+.big{font-family:var(--disp);font-weight:800;font-size:56px;color:var(--green);letter-spacing:-.04em;line-height:1}
+.ticket{border:1px solid var(--forest);border-radius:12px;overflow:hidden;background:var(--white)}
+.tkt-h{background:var(--forest);color:#fff;padding:12px 18px;display:flex;justify-content:space-between;font-family:var(--disp);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.tkt-h span{color:#8FC5A9;font-weight:600;letter-spacing:0;text-transform:none;font-size:11.5px}
+.tkt-b{padding:26px 18px;text-align:center;border-bottom:1px dashed var(--line-2)}
+.tkt-f{padding:16px 18px}
+.spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.center{text-align:center}
+
+/* my trees */
+.seg{display:flex;gap:0;border:1px solid var(--line-2);border-radius:9px;overflow:hidden;margin-bottom:18px}
+.seg button{flex:1;background:var(--white);border:0;padding:11px;font-family:var(--disp);font-weight:700;font-size:13.5px;color:var(--body);cursor:pointer}
+.seg button.on{background:var(--forest);color:#fff}
+.tile{display:flex;gap:14px;padding:14px;border-bottom:1px solid var(--line);align-items:center}
+.tile:last-child{border-bottom:0}
+.tile img,.tile .noimg{width:62px;height:62px;border-radius:9px;object-fit:cover;flex:none;background:#DDE9E0}
+.tile .mid b{display:block;font-family:var(--disp);font-weight:800;color:var(--forest);font-size:16px}
+.tile .mid span{display:block;font-size:12.5px;color:var(--body);margin-top:2px}
+.tile .mid .n{font-family:var(--disp);font-weight:700;font-size:12px;color:var(--grey)}
+.pin{width:20px;height:20px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 1px 5px rgba(16,24,40,.35);cursor:pointer;position:relative}
+.pin span{position:absolute;top:23px;left:50%;transform:translateX(-50%);font-family:var(--disp);font-weight:800;font-size:11px;color:var(--forest);background:rgba(255,255,255,.92);border-radius:4px;padding:1px 5px;white-space:nowrap}
+.pin:hover{transform:scale(1.15)}
+#mymap{height:360px;border-radius:12px;overflow:hidden;border:1px solid var(--line);margin-bottom:18px}
+.priv{display:inline-block;background:#F1F5F4;color:#64748B;border-radius:5px;padding:2px 7px;font-size:11px;font-weight:600;margin-left:6px;font-family:var(--disp)}
+
+/* timeline */
+.tl{position:relative;padding-left:30px;margin-top:8px}
+.tl:before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:1px;background:var(--line-2)}
+.ev{position:relative;padding-bottom:22px}
+.ev:last-child{padding-bottom:0}
+.ev:before{content:"";position:absolute;left:-26px;top:5px;width:11px;height:11px;border-radius:50%;background:var(--white);border:2px solid var(--line-2)}
+.ev.plant:before{border-color:var(--forest);background:var(--forest)}
+.ev.water:before{border-color:var(--green);background:var(--green)}
+.ev.pic:before{border-color:var(--green)}
+.ev.bad:before{border-color:var(--amber);background:var(--amber)}
+.ev.gone:before{border-color:var(--grey);background:var(--grey)}
+.ev b{display:block;font-family:var(--disp);font-weight:700;color:var(--forest);font-size:14.5px}
+.ev span{display:block;font-size:12.5px;color:var(--grey);margin-top:1px}
+.ev img{width:100%;max-width:280px;border-radius:10px;border:1px solid var(--line);margin-top:9px;display:block}
+.ev em{font-style:italic;color:var(--body);font-size:13.5px;display:block;margin-top:5px}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pick label{display:block;margin:0;text-transform:none;letter-spacing:0;cursor:pointer}
+.pick input{position:absolute;opacity:0;width:0;height:0}
+.pick .box{border:1.5px solid var(--line-2);border-radius:10px;padding:14px 13px;background:var(--white);height:100%}
+.pick input:checked + .box{border-color:var(--green);background:var(--green-soft)}
+.pick .box b{display:block;font-family:var(--disp);font-weight:700;color:var(--forest);font-size:14.5px;margin-bottom:3px}
+.pick .box span{display:block;font-size:12.5px;color:var(--body);line-height:1.45;font-weight:400}
+.locked{background:#F1F5F4;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:14px}
+.locked b{display:block;font-family:var(--disp);font-weight:700;color:var(--forest);font-size:14px;margin-bottom:3px}
+.locked span{font-size:13px;color:var(--body)}
+.ownbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.ownbar span{font-size:13px;color:var(--body)}
+.ownbar .btn{flex:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none}
+.brand .mk{width:32px;height:32px;flex:none}
+.wm{font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:-.025em;color:var(--forest);white-space:nowrap}
+.wm .pm-i{position:relative;display:inline-block;font-size:inherit;padding:0;border:0;gap:0}
+.wm .pm-leaf{position:absolute;left:50%;bottom:1.05em;width:.30em;height:.30em;transform:translateX(calc(-50% + .045em)) rotate(-45deg)}
+.brand em{font-style:normal;font-family:var(--text);font-weight:400;font-size:12.5px;color:var(--grey)}
+</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%2314432E%22/><path d=%22M16 28V15%22 stroke=%22white%22 stroke-width=%222.6%22 stroke-linecap=%22round%22/><path d=%22M16 17C8.5 17 4 12.5 4 5c7.5 0 12 4.5 12 12z%22 fill=%22white%22/><path d=%22M16 20c5.5 0 9-3.5 9-9-5.5 0-9 3.5-9 9z%22 fill=%22%232E9E63%22/></svg>">
+</head>
+<body>
+
+<header>
+  <div class="hd">
+    <a href="index.html" class="brand"><svg class="mk" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 29V15" stroke="#14432E" stroke-width="2.4" stroke-linecap="round"/><path d="M16 17C8.5 17 4 12.5 4 5c7.5 0 12 4.5 12 12z" fill="#14432E"/><path d="M16 20c5.5 0 9-3.5 9-9-5.5 0-9 3.5-9 9z" fill="#2E9E63"/></svg> <span class="wm">PedM<span class="pm-i">ı<svg class="pm-leaf" viewBox="16 11 9 9" aria-hidden="true"><path d="M16 20c5.5 0 9-3.5 9-9-5.5 0-9 3.5-9 9z" fill="#2E9E63"/></svg></span>tra</span> <em>पेड़मित्र</em></a>
+    <span class="sp"></span>
+    <span class="who" id="who"></span>
+    <button class="btn line sm" id="signout" style="display:none">Sign out</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ SIGN IN ============ -->
+  <section class="view" id="v-auth">
+    <div class="card pad" style="max-width:440px;margin:20px auto">
+      <div class="kick">Sign in</div>
+      <h1 class="title">One tree, one number, one account.</h1>
+      <p class="sub mb">We use your email only to know it's you, and so a bad actor can be blocked. Nothing is sold, nothing is shared.</p>
+
+      <div class="msg" id="auth-msg"></div>
+
+      <div id="step-email">
+        <div class="field">
+          <label for="email">Your email</label>
+          <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <button class="btn wide" id="send-link">Email me a sign-in link</button>
+        <p class="hint" style="margin-top:12px">We'll send you a link. Open it on this same device and you're in — no password to remember, none to lose.</p>
+      </div>
+
+      <div id="step-sent" style="display:none" class="center">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#2E9E63" stroke-width="1.5" style="margin:8px auto"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+        <h2 class="d" style="font-size:19px;font-weight:800">Check your email</h2>
+        <p class="sub">We've sent a sign-in link to <b id="sent-to" style="color:var(--forest)"></b>. Open it in this browser.</p>
+        <p class="hint" style="margin-top:16px">Nothing arrived? Look in spam. <a href="#" id="back-email" style="color:var(--green);font-weight:600">Try another email</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NAME ============ -->
+  <section class="view" id="v-name">
+    <div class="card pad" style="max-width:440px;margin:20px auto">
+      <div class="kick">Almost there</div>
+      <h1 class="title">What should we call you?</h1>
+      <p class="sub mb">This is the name that appears on the trees you plant and the ones you water. Your email is never shown to anyone.</p>
+      <div class="field">
+        <label for="dname">Your name</label>
+        <input type="text" id="dname" placeholder="Keshav Teotia">
+      </div>
+      <div class="field">
+        <label for="dcity">Your city</label>
+        <input type="text" id="dcity" placeholder="Noida">
+      </div>
+      <button class="btn wide" id="save-name">Start</button>
+    </div>
+  </section>
+
+  <!-- ============ HOME ============ -->
+  <section class="view" id="v-home">
+    <div class="kick">Near you</div>
+    <h1 class="title">Trees that need water.</h1>
+    <p class="sub mb">Not the map. This. These are within walking distance and nobody has come back for them.</p>
+
+    <div class="msg" id="home-msg"></div>
+
+    <div class="card mb" id="care-list">
+      <div class="empty"><span>Finding trees near you…</span></div>
+    </div>
+
+    <button class="btn wide dark mb" onclick="location.hash='#/plant'">Plant a tree</button>
+
+    <div class="stats mb" id="home-stats">
+      <div><b>—</b><span>REGISTERED</span></div>
+      <div><b>—</b><span>STANDING</span></div>
+      <div><b>—</b><span>WATERINGS</span></div>
+    </div>
+
+    <div class="card pad" id="my-record" style="display:none">
+      <div class="kick">Your record</div>
+      <div class="dl" style="border-top:0"><dt>Trees planted</dt><dd id="r-planted">0</dd></div>
+      <div class="dl"><dt>Times you watered a tree</dt><dd id="r-cared">0</dd></div>
+      <div class="dl"><dt>Your score</dt><dd id="r-score">0</dd></div>
+      <p class="hint">Watering is worth more than planting. Watering a tree you didn't plant is worth the most.</p>
+    </div>
+  </section>
+
+  <!-- ============ MAP ============ -->
+  <section class="view" id="v-map">
+    <div class="kick">The registry</div>
+    <h1 class="title" style="margin-bottom:14px">Every tree in India.</h1>
+    <div id="map"></div>
+    <p class="hint" id="map-status">Loading the registry…</p>
+  </section>
+
+  <!-- ============ PLANT ============ -->
+  <section class="view" id="v-plant">
+    <div class="kick">Register</div>
+    <h1 class="title">A tree you just planted.</h1>
+    <p class="sub mb">Take the photo where the tree stands — that's how the location gets recorded.</p>
+
+    <div class="msg" id="plant-msg"></div>
+
+    <div class="mb">
+      <input type="file" id="photo" accept="image/*" capture="environment" style="display:none">
+      <div class="drop" id="drop">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.5"><path d="M3 8h3l1.5-2h9L18 8h3v11H3z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        <b>Take a photo of the tree</b>
+        <span>Opens your camera. Gallery uploads aren't allowed — a photo has to be taken where the tree is.</span>
+      </div>
+      <img class="shot" id="preview" style="display:none" alt="Your tree">
+    </div>
+
+    <div class="card pad mb" id="gps-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <div>
+          <b class="d" style="font-size:15px">Location</b>
+          <p class="hint" id="gps-text" style="margin-top:2px">Not captured yet</p>
+        </div>
+        <button class="btn line sm" id="get-gps">Get location</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="species">Which tree is it?</label>
+      <select id="species"><option value="">Loading…</option></select>
+    </div>
+
+    <div class="field" id="other-box" style="display:none">
+      <label for="other-name">What is it called?</label>
+      <input type="text" id="other-name" maxlength="60" placeholder="Tulsi, Curry leaf, Money plant…">
+      <p class="hint">Write the name you know it by. It'll be shown on the tree instead of "Other".</p>
+    </div>
+
+    <div class="field">
+      <label>Where is it standing?</label>
+      <div class="pick">
+        <label>
+          <input type="radio" name="place" value="public" checked>
+          <div class="box">
+            <b>In a public place</b>
+            <span>A street, park, roadside, campus, open ground. Anyone can reach it.</span>
+          </div>
+        </label>
+        <label>
+          <input type="radio" name="place" value="private">
+          <div class="box">
+            <b>Inside my home</b>
+            <span>A garden, terrace, courtyard, balcony. Behind a gate.</span>
+          </div>
+        </label>
+      </div>
+      <p class="hint" id="place-hint">It will appear on the public map, and anyone nearby can come and water it.</p>
+    </div>
+
+    <div class="field">
+      <label for="campaign">Drive or campaign name <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--grey)">— optional</span></label>
+      <input type="text" id="campaign" placeholder="e.g. sector-62-monsoon-drive">
+      <p class="hint">Planting with a group today? Give it a name and all your trees are grouped together. It's remembered for your next tree.</p>
+    </div>
+
+    <button class="btn wide" id="submit-tree" disabled>Register this tree</button>
+  </section>
+
+  <!-- ============ SUCCESS ============ -->
+  <section class="view" id="v-done">
+    <div class="center mb">
+      <div class="kick">Registered</div>
+      <p class="sub" id="done-line">You planted the 1st tree on PedMitra.</p>
+    </div>
+
+    <div class="ticket mb">
+      <div class="tkt-h"><b>PedMitra Registry</b><span>India</span></div>
+      <div class="tkt-b">
+        <div class="big" id="done-no">#1</div>
+        <div class="d" style="font-weight:800;font-size:19px;margin-top:6px" id="done-sp">Neem</div>
+      </div>
+      <div class="tkt-f">
+        <div class="dl" style="border-top:0"><dt>Planted</dt><dd id="done-date">—</dd></div>
+        <div class="dl"><dt>By</dt><dd id="done-by">—</dd></div>
+        <div class="dl"><dt>At</dt><dd id="done-at">—</dd></div>
+      </div>
+    </div>
+
+    <div class="locked mb" id="done-private" style="display:none">
+      <b>This one is yours alone</b>
+      <span>It's at your home, so it won't appear on the public map and nobody will be sent to water it. It still has a permanent number, and it still counts towards India's total.</span>
+    </div>
+
+    <button class="btn wide wa mb" id="share-wa">Share on WhatsApp</button>
+    <button class="btn wide line mb" onclick="location.hash='#/plant'">Plant another</button>
+    <button class="btn wide line" id="done-view">See it on the map</button>
+
+    <p class="hint center" style="margin-top:20px">This number is yours permanently. It is never reused — not even if the tree dies.</p>
+  </section>
+
+  <!-- ============ MY TREES ============ -->
+  <section class="view" id="v-mine">
+    <div class="kick">Your record</div>
+    <h1 class="title">The trees you're responsible for.</h1>
+    <p class="sub mb">Everything you've planted, and everything you've taken on.</p>
+
+    <div class="stats mb" id="mine-stats">
+      <div><b>—</b><span>PLANTED</span></div>
+      <div><b>—</b><span>STANDING</span></div>
+      <div><b>—</b><span>WATERINGS</span></div>
+      <div><b>—</b><span>SCORE</span></div>
+    </div>
+
+    <div class="seg">
+      <button id="seg-list" class="on">List</button>
+      <button id="seg-map">Map</button>
+    </div>
+
+    <div id="mymap" style="display:none"></div>
+
+    <div id="mine-list">
+      <div class="card"><div class="empty"><span>Loading…</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ ONE TREE ============ -->
+  <section class="view" id="v-tree">
+    <p class="hint mb"><a href="#/map" style="color:var(--green);font-weight:600">← Back to the map</a></p>
+    <div id="tree-body"><div class="card"><div class="empty"><span>Loading…</span></div></div></div>
+  </section>
+
+</main>
+
+<nav class="tabs">
+  <a href="#/home" data-tab="home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 7v11H4V10z"/></svg>
+    Near you
+  </a>
+  <a href="#/map" data-tab="map">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>
+    Map
+  </a>
+  <a href="#/plant" data-tab="plant" class="plant">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+    Plant
+  </a>
+  <a href="#/mine" data-tab="mine">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21V11M12 11C12 8 10 6 7 6c0 3 2 5 5 5zM12 11c0-3.5 2.5-6 6-6 0 3.5-2.5 6-6 6z"/></svg>
+    My trees
+  </a>
+</nav>
+
+<script src="config.js"></script>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const CFG = window.PEDMITRA || {};
+
+// Tidy up whatever was pasted into config.js: strip spaces, strip any
+// trailing slash, strip an accidental path on the end. A single stray
+// "/" is enough to break sign-in, so we don't rely on it being perfect.
+const RAW = (CFG.SUPABASE_URL || '').trim();
+const URL_OK = /^https:\/\/[a-z0-9-]+\.supabase\.co$/i;
+const CLEAN = RAW.replace(/\s+/g, '').replace(/\/+$/, '').replace(/(\.supabase\.co).*$/i, '$1');
+const KEY = (CFG.SUPABASE_ANON_KEY || '').trim();
+
+function setupError(msg) {
+  document.querySelector('main').innerHTML =
+    '<div class="card pad"><h1 class="title">Not set up yet</h1><p class="sub">' + msg + '</p></div>';
+  throw new Error(msg);
+}
+if (!RAW || RAW.startsWith('PASTE')) setupError('Open <b>config.js</b> and paste your Supabase project URL and anon key into it.');
+if (!KEY || KEY.startsWith('PASTE')) setupError('The anon key is missing from <b>config.js</b>.');
+if (!URL_OK.test(CLEAN)) setupError('The URL in <b>config.js</b> doesn\'t look right. It should be exactly like <b>https://yourproject.supabase.co</b> — nothing after <b>.co</b>.');
+const sb = createClient(CLEAN, KEY, {
+  auth: { flowType: 'pkce', detectSessionInUrl: true, persistSession: true }
+});
+
+/* ---------- small helpers ---------- */
+const $ = id => document.getElementById(id);
+const show = (el, cls, text) => { el.className = 'msg on ' + cls; el.textContent = text; };
+const hide = el => { el.className = 'msg'; };
+const nf = n => Number(n).toLocaleString('en-IN');
+const ago = ts => {
+  if (!ts) return 'never';
+  const d = Math.floor((Date.now() - new Date(ts)) / 86400000);
+  if (d <= 0) return 'today';
+  if (d === 1) return 'yesterday';
+  return d + ' days ago';
+};
+const TAGS = {
+  healthy:     ['tag',   'Healthy'],
+  needs_water: ['tag w', 'Needs water'],
+  struggling:  ['tag b', 'Struggling'],
+  dead:        ['tag x', 'Did not survive']
+};
+const tagFor = s => { const [c, t] = TAGS[s] || TAGS.healthy; return `<span class="${c}"><i></i>${t}</span>`; };
+
+let me = null, myName = null, species = [], lastCampaign = '';
+
+/* ---------- session ---------- */
+async function loadMe(){
+  const { data } = await sb.auth.getSession();
+  me = data.session ? data.session.user : null;
+  if (me) {
+    const { data: p } = await sb.from('profiles').select('display_name').eq('id', me.id).single();
+    myName = p ? p.display_name : null;
+    $('who').textContent = myName || '';
+    $('signout').style.display = '';
+  } else {
+    myName = null;
+    $('who').textContent = '';
+    $('signout').style.display = 'none';
+  }
+}
+
+$('signout').onclick = async () => { await sb.auth.signOut(); location.hash = '#/home'; location.reload(); };
+
+/* ---------- sign in ---------- */
+$('send-link').onclick = async () => {
+  const email = $('email').value.trim();
+  if (!email) return show($('auth-msg'), 'err', 'Put your email in first.');
+  const btn = $('send-link');
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Sending\u2026';
+  const { error } = await sb.auth.signInWithOtp({
+    email,
+    options: {
+      shouldCreateUser: true,
+      emailRedirectTo: location.origin + location.pathname
+    }
+  });
+  btn.disabled = false; btn.textContent = 'Email me a sign-in link';
+  if (error) return show($('auth-msg'), 'err', error.message);
+  hide($('auth-msg'));
+  $('sent-to').textContent = email;
+  $('step-email').style.display = 'none';
+  $('step-sent').style.display = '';
+};
+
+$('back-email').onclick = e => {
+  e.preventDefault();
+  $('step-sent').style.display = 'none';
+  $('step-email').style.display = '';
+  hide($('auth-msg'));
+};
+
+$('save-name').onclick = async () => {
+  const name = $('dname').value.trim();
+  if (!name) return;
+  await sb.rpc('set_my_name', { p_name: name, p_city: $('dcity').value.trim() || null });
+  await loadMe();
+  location.hash = '#/home';
+  route();
+};
+
+/* ---------- home ---------- */
+async function loadHome(){
+  const { data: stats } = await sb.rpc('registry_stats');
+  if (stats) {
+    const b = $('home-stats').querySelectorAll('b');
+    b[0].textContent = nf(stats.registered);
+    b[1].textContent = nf(stats.standing);
+    b[2].textContent = nf(stats.waterings);
+  }
+
+  if (me) {
+    const { data: r } = await sb.rpc('my_record');
+    if (r) {
+      $('my-record').style.display = '';
+      $('r-planted').textContent = nf(r.planted);
+      $('r-cared').textContent   = nf(r.cared);
+      $('r-score').textContent   = nf(r.score);
+    }
+  }
+
+  const list = $('care-list');
+  if (!navigator.geolocation) {
+    list.innerHTML = '<div class="empty"><b>We can\'t find you</b><span>Your browser won\'t share your location, so we can\'t tell you which trees are nearby.</span></div>';
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const { data, error } = await sb.rpc('trees_needing_care', {
+      in_lat: pos.coords.latitude,
+      in_lng: pos.coords.longitude,
+      radius_m: 2000
+    });
+    if (error) { list.innerHTML = `<div class="empty"><span>${error.message}</span></div>`; return; }
+    if (!data || !data.length) {
+      list.innerHTML = '<div class="empty"><b>Nothing near you needs water</b><span>Either every tree around here has been looked after, or nobody has registered one yet. Both are worth fixing.</span></div>';
+      return;
+    }
+    list.innerHTML = '<div class="head">' + data.length + ' tree' + (data.length > 1 ? 's' : '') + ' near you need water · within 2 km</div>' +
+      data.map(t => `
+        <a class="row" href="#/tree/${t.tree_no}">
+          <span class="no">#${t.tree_no}</span>
+          <div class="mid">
+            <b>${t.species}</b>
+            <span>${t.distance_m} m away · <em>${t.state === 'struggling' ? 'marked struggling' : 'dry for ' + t.days_dry + ' days'}</em> · planted by ${t.planter}</span>
+          </div>
+          <span class="btn sm">Water it</span>
+        </a>`).join('');
+  }, () => {
+    list.innerHTML = '<div class="empty"><b>Location is switched off</b><span>Turn on location for this site and we\'ll show you the trees nearby that need water.</span></div>';
+  }, { enableHighAccuracy: true, timeout: 10000 });
+}
+
+/* ---------- map ---------- */
+let map = null;
+function loadMap(){
+  if (map) { map.resize(); return; }
+  map = new maplibregl.Map({
+    container: 'map',
+    style: 'https://tiles.openfreemap.org/styles/liberty',
+    center: [78.9, 22.5],
+    zoom: 3.6
+  });
+  map.addControl(new maplibregl.NavigationControl(), 'top-right');
+  map.addControl(new maplibregl.GeolocateControl({ trackUserLocation: false }), 'top-right');
+
+  map.on('load', () => {
+    map.addSource('trees', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: [] },
+      cluster: true, clusterRadius: 46, clusterMaxZoom: 13
+    });
+
+    map.addLayer({ id:'clusters', type:'circle', source:'trees', filter:['has','point_count'],
+      paint:{ 'circle-color':'#2E9E63','circle-opacity':.92,
+              'circle-stroke-color':'#fff','circle-stroke-width':2.5,
+              'circle-radius':['step',['get','point_count'],17,10,23,50,31,200,42] }});
+
+    map.addLayer({ id:'cluster-count', type:'symbol', source:'trees', filter:['has','point_count'],
+      layout:{ 'text-field':['get','point_count_abbreviated'], 'text-size':13,
+               'text-font':['Noto Sans Bold'] },
+      paint:{ 'text-color':'#fff' }});
+
+    map.addLayer({ id:'tree', type:'circle', source:'trees', filter:['!',['has','point_count']],
+      paint:{ 'circle-radius':['interpolate',['linear'],['zoom'],3,6,10,7,16,8],
+              'circle-stroke-color':'#fff', 'circle-stroke-width':2,
+              'circle-color':['match',['get','state'],
+                'needs_water','#D97706','struggling','#DC2626','dead','#94A3B8','#2E9E63'] }});
+
+    map.on('click','clusters', e => {
+      const f = map.queryRenderedFeatures(e.point, { layers:['clusters'] })[0];
+      map.getSource('trees').getClusterExpansionZoom(f.properties.cluster_id).then(z =>
+        map.easeTo({ center: f.geometry.coordinates, zoom: z }));
+    });
+
+    map.on('click','tree', e => {
+      const p = e.features[0].properties;
+      new maplibregl.Popup({ closeButton:false })
+        .setLngLat(e.features[0].geometry.coordinates)
+        .setHTML(`<div class="pp"><b>Tree #${p.tree_no}</b><span>${p.species} · planted by ${p.planter}</span>
+                  <a class="btn sm wide" href="#/tree/${p.tree_no}">Open it</a></div>`)
+        .addTo(map);
+    });
+
+    map.on('mouseenter','tree',   () => map.getCanvas().style.cursor = 'pointer');
+    map.on('mouseleave','tree',   () => map.getCanvas().style.cursor = '');
+    map.on('mouseenter','clusters',() => map.getCanvas().style.cursor = 'pointer');
+    map.on('mouseleave','clusters',() => map.getCanvas().style.cursor = '');
+
+    (async () => {
+      await refreshTrees();
+      const r = await sb.rpc('all_trees', { max_rows: 5000 });
+      if (!r.error && r.data && r.data.length) {
+        const bb = new maplibregl.LngLatBounds();
+        r.data.forEach(t => bb.extend([t.lng, t.lat]));
+        map.fitBounds(bb, { padding: 70, maxZoom: 14, duration: 0 });
+      }
+    })();
+    map.on('moveend', refreshTrees);
+  });
+}
+
+async function refreshTrees(){
+  // Zoomed out to the whole country, the map's corners run past the
+  // edge of the world. An impossible rectangle returns nothing, which
+  // is why trees only showed up once you zoomed in. Clamp it.
+  // Zoomed out past a city, just take every tree there is. It's a
+  // few thousand rows at most, and it means a lone tree in Noida
+  // cannot go missing on a view of the whole country.
+  const z = map.getZoom();
+  const b = map.getBounds();
+  const { data } = z < 9
+    ? await sb.rpc('all_trees', { max_rows: 5000 })
+    : await sb.rpc('trees_in_view', {
+        min_lng: Math.max(-180, b.getWest()),
+        min_lat: Math.max(-90,  b.getSouth()),
+        max_lng: Math.min(180,  b.getEast()),
+        max_lat: Math.min(90,   b.getNorth()),
+        max_rows: 5000
+      });
+  const src = map.getSource('trees');
+  if (!src) return;
+  src.setData({
+    type: 'FeatureCollection',
+    features: (data || []).map(t => ({
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [t.lng, t.lat] },
+      properties: { tree_no: t.tree_no, species: t.species, state: t.state, planter: t.planter }
+    }))
+  });
+}
+
+/* ---------- plant ---------- */
+let photoBlob = null, photoURL = null, gps = null;
+
+async function loadSpecies(){
+  if (species.length) return;
+  const { data } = await sb.from('species').select('*').order('sort_order');
+  species = data || [];
+  $('species').innerHTML = '<option value="">Choose the tree…</option>' +
+    species.map(s => `<option value="${s.id}">${s.common_name}${s.botanical_name ? ' — ' + s.botanical_name : ''}</option>`).join('');
+}
+
+$('drop').onclick = () => $('photo').click();
+
+$('photo').onchange = async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  photoBlob = await shrink(file);
+  photoURL = URL.createObjectURL(photoBlob);
+  $('preview').src = photoURL;
+  $('preview').style.display = '';
+  $('drop').style.display = 'none';
+  if (!gps) getGPS();
+  checkReady();
+};
+
+function shrink(file){
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 1200;
+      const s = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * s);
+      c.height = Math.round(img.height * s);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      c.toBlob(b => resolve(b), 'image/jpeg', 0.82);
+    };
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+$('get-gps').onclick = getGPS;
+
+function getGPS(){
+  $('gps-text').textContent = 'Looking for satellites…';
+  navigator.geolocation.getCurrentPosition(pos => {
+    gps = { lat: pos.coords.latitude, lng: pos.coords.longitude, acc: Math.round(pos.coords.accuracy) };
+    if (gps.acc > 30) {
+      $('gps-text').innerHTML = `Accurate to about ${gps.acc} m — <b style="color:var(--amber)">too vague</b>. Step into the open and try again.`;
+    } else {
+      $('gps-text').innerHTML = `${gps.lat.toFixed(5)}°, ${gps.lng.toFixed(5)}° · accurate to about ${gps.acc} m`;
+    }
+    checkReady();
+  }, () => {
+    $('gps-text').textContent = 'Could not get your location. Turn location on for this site.';
+  }, { enableHighAccuracy: true, timeout: 15000 });
+}
+
+$('species').onchange = checkReady;
+
+$('species').addEventListener('change', () => {
+  const isOther = $('species').value === 'other';
+  $('other-box').style.display = isOther ? '' : 'none';
+  if (!isOther) $('other-name').value = '';
+  checkReady();
+});
+
+$('other-name').addEventListener('input', checkReady);
+
+document.querySelectorAll('input[name="place"]').forEach(r => {
+  r.onchange = () => {
+    $('place-hint').innerHTML = r.value === 'private'
+      ? '<b style="color:var(--forest)">Only you will ever see this tree.</b> It stays off the public map and out of everyone else\'s list. Nobody will be sent to your door. It still gets a permanent number, and it still counts.'
+      : 'It will appear on the public map, and anyone nearby can come and water it.';
+  };
+});
+
+function checkReady(){
+  const sp = $('species').value;
+  const named = sp !== 'other' || $('other-name').value.trim().length > 1;
+  const ok = photoBlob && gps && gps.acc <= 30 && sp && named;
+  $('submit-tree').disabled = !ok;
+}
+
+$('submit-tree').onclick = async () => {
+  if (!me) { location.hash = '#/home'; route(); return; }
+  const btn = $('submit-tree');
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Registering…';
+  hide($('plant-msg'));
+
+  try {
+    const path = `${me.id}/${crypto.randomUUID()}.jpg`;
+    const up = await sb.storage.from('tree-photos').upload(path, photoBlob, { contentType: 'image/jpeg' });
+    if (up.error) throw up.error;
+    const { data: pub } = sb.storage.from('tree-photos').getPublicUrl(path);
+
+    const campaign = $('campaign').value.trim();
+    const isPublic = document.querySelector('input[name="place"]:checked').value === 'public';
+    const { data: no, error } = await sb.rpc('register_tree', {
+      p_species_id: $('species').value,
+      p_lat: gps.lat, p_lng: gps.lng,
+      p_photo_url: pub.publicUrl,
+      p_accuracy_m: gps.acc,
+      p_campaign_tag: campaign || null,
+      p_is_public: isPublic,
+      p_species_other: $('species').value === 'other' ? $('other-name').value.trim() : null
+    });
+    if (error) throw error;
+
+    lastCampaign = campaign;
+    const chosen = species.find(s => s.id === $('species').value);
+    const name = $('species').value === 'other'
+      ? $('other-name').value.trim()
+      : (chosen ? chosen.common_name : 'Tree');
+    showDone(no, name, gps, isPublic);
+  } catch (err) {
+    show($('plant-msg'), 'err', err.message || 'Something went wrong. Try again.');
+    btn.disabled = false; btn.textContent = 'Register this tree';
+  }
+};
+
+function showDone(no, sp, g, isPublic){
+  $('done-no').textContent   = '#' + nf(no);
+  $('done-sp').textContent   = sp;
+  $('done-line').textContent = `You planted the ${nf(no)}${ordinal(no)} tree on PedMitra.`;
+  $('done-date').textContent = new Date().toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
+  $('done-by').textContent   = myName || 'You';
+  $('done-at').textContent   = `${g.lat.toFixed(4)}°, ${g.lng.toFixed(4)}°`;
+
+  const url = location.origin + location.pathname + '#/tree/' + no;
+  const text = isPublic
+    ? `I just planted the ${nf(no)}${ordinal(no)} tree on PedMitra — a ${sp}. It's on the map now, and anyone nearby can water it. ${url}`
+    : `I just planted the ${nf(no)}${ordinal(no)} tree on PedMitra — a ${sp}. It's at my home, so it stays off the map. Plant yours: ${location.origin}`;
+  $('share-wa').onclick = () => window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+
+  const priv = $('done-private');
+  if (isPublic) { priv.style.display = 'none'; }
+  else {
+    priv.style.display = '';
+    $('share-wa').textContent = 'Tell a friend to plant one';
+    $('done-view').style.display = 'none';
+  }
+  $('done-view').onclick = () => { location.hash = '#/tree/' + no; };
+
+  resetPlant();
+  location.hash = '#/done';
+  route();
+}
+
+function ordinal(n){
+  const s = ['th','st','nd','rd'], v = n % 100;
+  return s[(v - 20) % 10] || s[v] || s[0];
+}
+
+function resetPlant(){
+  photoBlob = null; gps = null;
+  $('preview').style.display = 'none';
+  $('drop').style.display = '';
+  $('photo').value = '';
+  $('gps-text').textContent = 'Not captured yet';
+  $('campaign').value = lastCampaign;
+  $('other-name').value = '';
+  $('other-box').style.display = 'none';
+  document.querySelector('input[name="place"][value="public"]').checked = true;
+  $('place-hint').textContent = 'It will appear on the public map, and anyone nearby can come and water it.';
+  $('submit-tree').disabled = true;
+  $('submit-tree').textContent = 'Register this tree';
+}
+
+/* ---------- my trees ---------- */
+let myMap = null, mineData = { planted: [], adopted: [] };
+
+async function loadMine(){
+  const [rec, mine, adopted] = await Promise.all([
+    sb.rpc('my_record'),
+    sb.rpc('my_trees'),
+    sb.rpc('my_adopted')
+  ]);
+
+  if (rec.data) {
+    const b = $('mine-stats').querySelectorAll('b');
+    b[0].textContent = nf(rec.data.planted);
+    b[1].textContent = nf(rec.data.standing);
+    b[2].textContent = nf(rec.data.cared);
+    b[3].textContent = nf(rec.data.score);
+  }
+
+  mineData.planted  = mine.data || [];
+  mineData.adopted  = adopted.data || [];
+  drawMineList();
+  if (myMap) drawMineMap();
+}
+
+function tile(t, extra){
+  const img = t.photo
+    ? `<img src="${t.photo}" alt="">`
+    : `<span class="noimg"></span>`;
+  const dry = t.state === 'needs_water' ? `dry for ${t.days_dry} days`
+            : t.state === 'struggling'  ? 'struggling'
+            : t.state === 'dead'        ? 'did not survive'
+            : `watered ${ago(t.last_cared)}`;
+  return `<a class="tile" href="#/tree/${t.tree_no}">
+    ${img}
+    <div class="mid">
+      <span class="n">#${t.tree_no}${t.is_public === false ? '<span class="priv">Private</span>' : ''}</span>
+      <b>${t.species}</b>
+      <span>${dry}${extra ? ' · ' + extra : ''}</span>
+    </div>
+    ${tagFor(t.state)}
+  </a>`;
+}
+
+function drawMineList(){
+  const box = $('mine-list');
+  let html = '';
+
+  if (!mineData.planted.length) {
+    html += `<div class="card mb"><div class="empty">
+      <b>You haven't planted one yet</b>
+      <span>Your first tree becomes part of the registry permanently. Nothing takes that number back.</span>
+      <button class="btn" style="margin-top:16px" onclick="location.hash='#/plant'">Plant your first tree</button>
+    </div></div>`;
+  } else {
+    const dry = mineData.planted.filter(t => t.state === 'needs_water' || t.state === 'struggling').length;
+    html += `<div class="card mb">
+      <div class="head">${mineData.planted.length} tree${mineData.planted.length > 1 ? 's' : ''} you planted${dry ? ' · ' + dry + ' need attention' : ''}</div>
+      ${mineData.planted.map(t => tile(t)).join('')}
+    </div>`;
+  }
+
+  if (mineData.adopted.length) {
+    html += `<div class="card">
+      <div class="head">${mineData.adopted.length} tree${mineData.adopted.length > 1 ? 's' : ''} you adopted</div>
+      ${mineData.adopted.map(t => tile(t, 'planted by ' + t.planter)).join('')}
+    </div>`;
+  }
+
+  box.innerHTML = html;
+}
+
+let mineMarkers = [];
+
+function initMineMap(){
+  if (myMap) {
+    myMap.resize();
+    drawMineMap();
+    return;
+  }
+
+  myMap = new maplibregl.Map({
+    container: 'mymap',
+    style: 'https://tiles.openfreemap.org/styles/liberty',
+    center: [78.9, 22.5], zoom: 3.4
+  });
+  myMap.addControl(new maplibregl.NavigationControl(), 'top-right');
+  myMap.on('load', () => { myMap.resize(); drawMineMap(); });
+}
+
+// Real HTML pins, not a styled data layer. A data layer can quietly fail
+// to draw and leave you staring at an empty street; a div cannot.
+function drawMineMap(){
+  if (!myMap) return;
+
+  mineMarkers.forEach(m => m.remove());
+  mineMarkers = [];
+
+  const all = mineData.planted.concat(mineData.adopted);
+  if (!all.length) return;
+
+  const COLOUR = { healthy:'#2E9E63', needs_water:'#D97706', struggling:'#DC2626', dead:'#94A3B8' };
+
+  all.forEach(t => {
+    const pin = document.createElement('div');
+    pin.className = 'pin';
+    pin.style.background = COLOUR[t.state] || '#2E9E63';
+    pin.title = 'Tree #' + t.tree_no + ' · ' + t.species;
+    pin.innerHTML = '<span>#' + t.tree_no + '</span>';
+    pin.onclick = () => { location.hash = '#/tree/' + t.tree_no; };
+    mineMarkers.push(
+      new maplibregl.Marker({ element: pin, anchor: 'center' })
+        .setLngLat([t.lng, t.lat])
+        .addTo(myMap)
+    );
+  });
+
+  const b = new maplibregl.LngLatBounds();
+  all.forEach(t => b.extend([t.lng, t.lat]));
+
+  // Pots on a balcony sit a metre apart, so the box collapses to a point
+  // and fitBounds slams past the last map tile that exists.
+  const span = Math.max(
+    Math.abs(b.getEast() - b.getWest()),
+    Math.abs(b.getNorth() - b.getSouth())
+  );
+  if (all.length === 1 || span < 0.002) {
+    myMap.jumpTo({ center: b.getCenter(), zoom: 18 });
+  } else {
+    myMap.fitBounds(b, { padding: 60, maxZoom: 18, duration: 0 });
+  }
+}
+
+$('seg-list').onclick = () => {
+  $('seg-list').classList.add('on'); $('seg-map').classList.remove('on');
+  $('mine-list').style.display = ''; $('mymap').style.display = 'none';
+};
+$('seg-map').onclick = () => {
+  $('seg-map').classList.add('on'); $('seg-list').classList.remove('on');
+  $('mine-list').style.display = 'none'; $('mymap').style.display = '';
+  initMineMap();
+  // The container was hidden a moment ago, so the map thinks it has no
+  // size. Tell it otherwise once the browser has actually drawn it.
+  requestAnimationFrame(() => {
+    if (myMap) { myMap.resize(); drawMineMap(); }
+  });
+};
+
+/* ---------- one tree ---------- */
+async function loadTree(no){
+  const box = $('tree-body');
+  const { data: t, error } = await sb.rpc('get_tree', { p_tree_no: Number(no) });
+  if (error || !t) {
+    box.innerHTML = '<div class="card"><div class="empty"><b>No such tree</b><span>Nothing is registered under that number.</span></div></div>';
+    return;
+  }
+
+  const photo = (t.photos && t.photos[0]) ? `<img class="shot mb" src="${t.photos[0].url}" alt="Tree #${t.tree_no}">` : '';
+  const shots = (t.photos || []).length;
+
+  box.innerHTML = `
+    ${photo}
+    <div class="card pad mb">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+        <div>
+          <h1 class="title">Tree #${nf(t.tree_no)}</h1>
+          <p class="sub" style="margin-top:2px">${t.species}${t.botanical ? ' · ' + t.botanical : ''}</p>
+        </div>
+        ${tagFor(t.state)}
+      </div>
+      <div class="dl" style="margin-top:14px"><dt>Planted by</dt><dd>${t.planter}</dd></div>
+      <div class="dl"><dt>Planted on</dt><dd>${new Date(t.planted_on).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</dd></div>
+      <div class="dl"><dt>Coordinates</dt><dd>${t.lat.toFixed(5)}°, ${t.lng.toFixed(5)}°</dd></div>
+      <div class="dl"><dt>Last watered</dt><dd>${ago(t.last_cared)}</dd></div>
+      <div class="dl"><dt>Friends looking after it</dt><dd>${t.friends}</dd></div>
+
+      <div class="msg" id="tree-msg" style="margin-top:16px"></div>
+
+      ${t.is_public ? '' : `<div class="locked">
+        <b>A tree at someone's home</b>
+        <span>This one is private. It isn't on the public map and nobody is sent to water it. You can see it because you planted it.</span>
+      </div>`}
+
+      <button class="btn wide" id="water-it" style="margin-top:16px">I watered this</button>
+      <div style="display:flex;gap:10px;margin-top:10px">
+        ${t.is_public ? '<button class="btn line sm" id="adopt-it" style="flex:1">Adopt this tree</button>' : ''}
+        <a class="btn line sm" style="flex:1" target="_blank"
+           href="https://www.google.com/maps/dir/?api=1&destination=${t.lat},${t.lng}">Directions</a>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:10px">
+        <button class="btn line sm" id="mark-bad" style="flex:1">It's struggling</button>
+        <button class="btn line sm" id="mark-dead" style="flex:1">It didn't survive</button>
+      </div>
+
+      ${t.mine ? `<div class="ownbar">
+        <span>${t.is_public
+          ? 'This tree is on the public map.'
+          : 'This tree is private — only you can see it.'}</span>
+        <button class="btn line sm" id="flip-privacy">${t.is_public ? 'Make it private' : 'Put it on the map'}</button>
+      </div>` : ''}
+    </div>
+
+    <div class="card pad">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:6px">
+        <div>
+          <div class="kick" style="margin-bottom:2px">Its life so far</div>
+          <p class="hint" style="margin:0">${shots > 1 ? shots + ' photographs, taken over time' : 'One photograph. It could use another.'}</p>
+        </div>
+      </div>
+
+      <input type="file" id="new-photo" accept="image/*" capture="environment" style="display:none">
+      <button class="btn line wide sm" id="add-photo" style="margin:14px 0 20px">Add today's photo</button>
+
+      <div class="tl" id="timeline"><p class="hint">Loading…</p></div>
+    </div>`;
+
+  drawTimeline(no);
+
+  $('add-photo').onclick = () => {
+    if (!me) { show($('tree-msg'), 'warn', 'Sign in first — a photo has to belong to somebody.'); return; }
+    $('new-photo').click();
+  };
+
+  $('new-photo').onchange = async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const btn = $('add-photo');
+    btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Uploading…';
+    try {
+      const blob = await shrink(file);
+      const path = `${me.id}/${crypto.randomUUID()}.jpg`;
+      const up = await sb.storage.from('tree-photos').upload(path, blob, { contentType: 'image/jpeg' });
+      if (up.error) throw up.error;
+      const { data: pub } = sb.storage.from('tree-photos').getPublicUrl(path);
+      const { error } = await sb.rpc('add_photo', { p_tree_no: Number(no), p_url: pub.publicUrl });
+      if (error) throw error;
+      loadTree(no);
+    } catch (err) {
+      show($('tree-msg'), 'err', err.message || 'Could not add the photo.');
+      btn.disabled = false; btn.textContent = "Add today's photo";
+    }
+  };
+
+  const act = async (action, health, label) => {
+    if (!me) { show($('tree-msg'), 'warn', 'Sign in first — we need to know who watered it.'); return; }
+    const { error } = await sb.rpc('log_care', {
+      p_tree_no: Number(no), p_action: action, p_health: health
+    });
+    if (error) return show($('tree-msg'), 'err', error.message);
+    show($('tree-msg'), 'ok', label);
+    setTimeout(() => loadTree(no), 900);
+  };
+
+  $('water-it').onclick = () => act('watered', null, 'Logged. Somebody planted this and you came back for it.');
+
+  const flip = $('flip-privacy');
+  if (flip) flip.onclick = async () => {
+    const goingPublic = !t.is_public;
+
+    // Hiding is safe and instant. Revealing puts a location on the map for
+    // everyone, so we make sure that's really what they meant.
+    if (goingPublic) {
+      const ok = confirm(
+        "Put this tree on the public map?\n\n" +
+        "Anyone will be able to see where it is and come to water it. " +
+        "If it's at your home, leave it private instead."
+      );
+      if (!ok) return;
+    }
+
+    flip.disabled = true;
+    const { error } = await sb.rpc('set_tree_privacy', {
+      p_tree_no: Number(no), p_is_public: goingPublic
+    });
+    if (error) {
+      flip.disabled = false;
+      // A private->public collision is the one error worth softening: it's
+      // not the person's fault, and the raw text can read like a scolding.
+      const clash = /already a public tree/i.test(error.message);
+      return show($('tree-msg'), clash ? 'warn' : 'err', error.message);
+    }
+
+    show($('tree-msg'), 'ok', goingPublic
+      ? "It's on the map now. Anyone nearby can help water it."
+      : "Hidden. It's off the map, and nobody will be sent to it.");
+    setTimeout(() => loadTree(no), 900);
+  };
+  $('mark-bad').onclick  = () => act('checked', 'struggling', 'Marked as struggling. Thank you for telling the truth.');
+  $('mark-dead').onclick = () => act('checked', 'dead', 'Recorded. The number stays. We do not hide the ones we lost.');
+
+  const adoptBtn = $('adopt-it');
+  if (adoptBtn) adoptBtn.onclick = async () => {
+    if (!me) { show($('tree-msg'), 'warn', 'Sign in first.'); return; }
+    const { data: now, error } = await sb.rpc('toggle_adopt', { p_tree_no: Number(no) });
+    if (error) return show($('tree-msg'), 'err', error.message);
+    show($('tree-msg'), 'ok', now ? "Adopted. It's on your list now." : 'Un-adopted.');
+    setTimeout(() => loadTree(no), 900);
+  };
+}
+
+async function drawTimeline(no){
+  const box = $('timeline');
+  if (!box) return;
+  const { data: ev } = await sb.rpc('timeline', { p_tree_no: Number(no) });
+  if (!ev || !ev.length) { box.innerHTML = '<p class="hint">Nothing recorded yet.</p>'; return; }
+
+  const when = at => new Date(at).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+
+  box.innerHTML = ev.map(e => {
+    if (e.kind === 'planted')
+      return `<div class="ev plant"><b>${e.who} planted it</b><span>${when(e.at)}</span></div>`;
+
+    if (e.kind === 'photo')
+      return `<div class="ev pic"><b>${e.who} took a photograph</b><span>${when(e.at)} · ${ago(e.at)}</span>
+              <img src="${e.url}" alt="" loading="lazy"></div>`;
+
+    const A = {
+      watered: ['water', 'watered it'],
+      weeded:  ['water', 'cleared the weeds'],
+      staked:  ['water', 'staked it'],
+      fenced:  ['water', 'fenced it'],
+      pruned:  ['water', 'pruned it'],
+      checked: ['pic',   'checked on it']
+    };
+    let [cls, verb] = A[e.action] || ['pic', e.action];
+    return `<div class="ev ${cls}"><b>${e.who} ${verb}</b><span>${when(e.at)} · ${ago(e.at)}</span>
+            ${e.note ? '<em>“' + e.note + '”</em>' : ''}</div>`;
+  }).join('');
+}
+
+/* ---------- routing ---------- */
+const VIEWS = ['auth','name','home','map','plant','done','tree','mine'];
+function setView(v){
+  VIEWS.forEach(x => $('v-' + x).classList.toggle('on', x === v));
+  document.querySelectorAll('nav.tabs a').forEach(a =>
+    a.classList.toggle('on', a.dataset.tab === v));
+  window.scrollTo(0, 0);
+}
+
+async function route(){
+  const h = location.hash || '#/home';
+  const parts = h.replace('#/', '').split('/');
+  const page = parts[0] || 'home';
+
+  // A tree page is public — anyone can look without signing in.
+  if (page === 'tree') { setView('tree'); loadTree(parts[1]); return; }
+  if (page === 'map')  { setView('map'); loadMap(); return; }
+
+  if (!me) { setView('auth'); return; }
+  if (!myName) { setView('name'); return; }
+
+  if (page === 'plant') { setView('plant'); loadSpecies(); return; }
+  if (page === 'mine')  { setView('mine'); loadMine(); return; }
+  if (page === 'done')  { setView('done'); return; }
+  setView('home');
+  loadHome();
+}
+
+window.addEventListener('hashchange', route);
+
+// When the magic link brings you back, Supabase swaps the code for a session.
+// That fires this, and we redraw.
+sb.auth.onAuthStateChange(async () => {
+  await loadMe();
+  if (location.search.includes('code=')) {
+    history.replaceState({}, '', location.pathname + (location.hash || '#/home'));
+  }
+  route();
+});
+
+await loadMe();
+route();
+</script>
+</body>
+</html>

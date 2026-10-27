@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PedMitra — Keep India’s trees alive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F9FA;
+  --white:#FFFFFF;
+  --forest:#14432E;
+  --forest-2:#0E3122;
+  --green:#2E9E63;
+  --green-h:#268354;
+  --green-soft:#EAF5EF;
+  --body:#64748B;
+  --body-2:#475569;
+  --line:#E4EAE7;
+  --line-2:#D3DCD7;
+  --amber:#D97706;
+  --amber-soft:#FDF3E4;
+  --red:#DC2626;
+  --grey:#94A3B8;
+  --disp:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;
+  --text:'Inter','Segoe UI',system-ui,sans-serif;
+  --pad:clamp(20px,5vw,60px);
+  --rail:70px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--white);color:var(--body);font-family:var(--text);font-size:16px;line-height:1.68;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--green);color:#fff}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+h1,h2,h3,h4,.d{font-family:var(--disp);color:var(--forest);letter-spacing:-.025em}
+
+.wrap{max-width:1220px;margin:0 auto;padding:0 var(--pad)}
+
+/* ---------- the number spine ---------- */
+.spine{display:grid;grid-template-columns:var(--rail) 1fr;gap:0}
+.rail{position:relative;padding-top:8px}
+.rail:before{content:"";position:absolute;left:15px;top:0;bottom:-1px;width:1px;background:var(--line-2)}
+.node{position:relative;width:32px;height:32px;border-radius:50%;background:var(--white);border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:800;font-size:11px;color:var(--forest);letter-spacing:0}
+.node.on{background:var(--green);border-color:var(--green);color:#fff}
+@media(max-width:900px){
+  .spine{grid-template-columns:1fr}
+  .rail{display:none}
+}
+
+.sec{padding:clamp(64px,8vw,110px) 0;border-top:1px solid var(--line)}
+.sec.tint{background:var(--bg)}
+.kicker{font-family:var(--disp);font-weight:800;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);display:block;margin-bottom:14px}
+h2{font-size:clamp(30px,3.9vw,46px);font-weight:800;line-height:1.12;max-width:16ch}
+.say{margin-top:20px;max-width:58ch;font-size:17px}
+.say + .say{margin-top:14px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-family:var(--disp);font-weight:700;font-size:15px;padding:14px 26px;border-radius:8px;background:var(--green);color:#fff;border:1px solid var(--green);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.btn:hover{background:var(--green-h);border-color:var(--green-h)}
+.btn.line{background:transparent;color:var(--forest);border-color:var(--line-2)}
+.btn.line:hover{background:var(--forest);border-color:var(--forest);color:#fff}
+.btn.dark{background:var(--forest);border-color:var(--forest)}
+.btn.dark:hover{background:var(--forest-2);border-color:var(--forest-2)}
+.btn.sm{padding:10px 18px;font-size:14px}
+.btn.wide{width:100%}
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line)}
+.nv{display:flex;align-items:center;height:76px;gap:26px}
+
+
+
+.nv .sp{flex:1}
+.nv nav,.nl{display:flex;gap:26px;font-family:var(--disp);font-weight:600;font-size:14.5px;color:var(--body-2)}
+.nl a:hover{color:var(--green)}
+@media(max-width:900px){.nl{display:none}}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(52px,6vw,84px) 0 clamp(46px,5vw,70px)}
+.hg{display:grid;grid-template-columns:1.08fr .92fr;gap:clamp(32px,5vw,70px);align-items:end}
+h1{font-size:clamp(38px,5.4vw,64px);font-weight:800;line-height:1.02}
+h1 span{color:var(--green)}
+.hero .say{font-size:18.5px;max-width:44ch}
+.hact{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.tiny{margin-top:22px;font-size:13.5px;color:var(--grey)}
+
+.ledger{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--white)}
+.lh{display:flex;justify-content:space-between;align-items:center;padding:13px 18px;border-bottom:1px solid var(--line);background:var(--bg)}
+.lh b{font-family:var(--disp);font-weight:800;font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--forest)}
+.lh i{font-style:normal;display:flex;align-items:center;gap:7px;font-size:12px;color:var(--green);font-weight:600;font-family:var(--disp)}
+.blip{width:7px;height:7px;border-radius:50%;background:var(--green);animation:bl 2s ease-in-out infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.25}}
+.lr{display:flex;align-items:center;gap:14px;padding:13px 18px;border-bottom:1px solid var(--line)}
+.lr:last-child{border-bottom:0}
+.lr .num{font-family:var(--disp);font-weight:800;font-size:13.5px;color:var(--forest);width:56px;flex:none}
+.lr .nm{flex:1;min-width:0;font-size:14.5px;color:var(--forest);font-weight:500}
+.lr .nm u{text-decoration:none;color:var(--grey);font-weight:400}
+.lr .ev{font-size:12.5px;color:var(--body);white-space:nowrap}
+.lr .dt{width:8px;height:8px;border-radius:50%;flex:none}
+.g{background:var(--green)}.a{background:var(--amber)}.r{background:var(--red)}.x{background:var(--line-2)}
+@media(max-width:900px){.hg{grid-template-columns:1fr}}
+
+/* ---------- counter band ---------- */
+.band{background:var(--forest);color:#fff;padding:44px 0}
+.bg2{display:flex;align-items:flex-end;gap:clamp(24px,5vw,72px);flex-wrap:wrap}
+.big{font-family:var(--disp);font-weight:800;font-size:clamp(46px,6vw,76px);line-height:.95;letter-spacing:-.04em;color:#fff}
+.big small{display:block;font-family:var(--disp);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8FC5A9;margin-top:12px}
+.mini{display:flex;gap:clamp(20px,4vw,52px);flex-wrap:wrap;padding-bottom:6px}
+.mini div b{display:block;font-family:var(--disp);font-weight:800;font-size:26px;color:#fff;letter-spacing:-.02em}
+.mini div span{display:block;font-size:12px;color:#8FC5A9;margin-top:2px;font-family:var(--disp);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.band-note{margin-top:30px;padding-top:20px;border-top:1px solid rgba(255,255,255,.13);font-size:14px;line-height:1.7;color:#8FC5A9;max-width:96ch}
+.band-note b{color:#fff;font-weight:600}
+.band-note .sum{display:flex;width:fit-content;align-items:center;gap:9px;flex-wrap:wrap;margin-top:16px;font-family:var(--disp);font-weight:700;font-size:13px;color:#fff;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:8px 14px}
+.band-note .sum i{font-style:normal;color:#8FC5A9;font-weight:600}
+@media(max-width:640px){
+  .band{padding:34px 0}
+  .band-note{margin-top:22px;padding-top:16px;font-size:13.5px}
+  .band-note .sum{font-size:12.5px;padding:8px 12px;gap:7px}
+}
+
+/* ---------- why ---------- */
+.why{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(30px,5vw,64px);align-items:start}
+.pull{margin-top:28px;padding:22px 24px;background:var(--white);border:1px solid var(--line);border-left:3px solid var(--green);border-radius:0 10px 10px 0}
+.pull p{font-family:var(--disp);font-weight:600;color:var(--forest);font-size:17px;line-height:1.55;font-style:italic}
+.pull cite{display:block;margin-top:10px;font-style:normal;font-size:13px;color:var(--grey)}
+.shot{border-radius:12px;border:1px solid var(--line);background:linear-gradient(150deg,#DDE9E0,#C4DCCD);height:340px;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#7C9C89;position:relative}
+.shot span{position:absolute;left:14px;bottom:14px;background:var(--white);border:1px solid var(--line);border-radius:6px;padding:7px 13px;font-size:12px;color:var(--forest);letter-spacing:0;text-transform:none}
+.mort{display:grid;grid-template-columns:repeat(25,1fr);gap:7px;margin-top:22px}
+.mort i{display:block;height:12px;border-radius:2px;background:var(--green)}
+.mort i.d{background:#DCE3DF}
+.mkey{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px;font-size:13px;color:var(--body)}
+.mkey span{display:flex;align-items:center;gap:7px}
+.mkey u{width:10px;height:10px;border-radius:2px;display:block}
+@media(max-width:900px){.why{grid-template-columns:1fr}.mort{grid-template-columns:repeat(20,1fr);gap:5px}}
+
+/* ---------- timeline ---------- */
+.tl{margin-top:52px}
+.tstep{display:grid;grid-template-columns:170px 1fr 220px;gap:clamp(20px,4vw,48px);padding:32px 0;border-top:1px solid var(--line);align-items:start}
+.tstep:last-child{border-bottom:1px solid var(--line)}
+.tstep .lbl{font-family:var(--disp);font-weight:800;color:var(--green);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.tstep .lbl b{display:block;font-size:26px;color:var(--forest);letter-spacing:-.02em;margin-top:6px;text-transform:none}
+.tstep h3{font-size:24px;font-weight:800;margin-bottom:10px}
+.tstep p{font-size:15.5px;max-width:52ch}
+.tstep .note{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:13.5px;color:var(--body-2)}
+.tstep .note b{display:block;font-family:var(--disp);color:var(--forest);font-size:12px;letter-spacing:.09em;text-transform:uppercase;margin-bottom:5px;font-weight:800}
+@media(max-width:900px){.tstep{grid-template-columns:1fr;gap:16px;padding:26px 0}}
+
+/* ---------- promise split ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;margin-top:48px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--white)}
+.half{padding:34px 32px}
+.half + .half{border-left:1px solid var(--line);background:var(--bg)}
+.half h3{font-size:22px;margin-bottom:6px}
+.half > p{font-size:14.5px;margin-bottom:22px}
+.li{display:flex;gap:12px;padding:13px 0;border-top:1px solid var(--line);font-size:15px;color:var(--body-2)}
+.li svg{flex:none;margin-top:3px}
+.li b{color:var(--forest);font-weight:600}
+@media(max-width:820px){.split{grid-template-columns:1fr}.half+.half{border-left:0;border-top:1px solid var(--line)}}
+
+/* ---------- map ---------- */
+.mapwrap{margin-top:44px;position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#EAF3EE}
+.mapwrap svg{width:100%;display:block;height:440px}
+.lay{opacity:0;transition:opacity .3s;pointer-events:none}
+.lay.on{opacity:1;pointer-events:auto}
+.bub circle{fill:rgba(46,158,99,.13);stroke:#79BF9C;stroke-width:1.4}
+.bub text{font-family:var(--disp);font-weight:700;font-size:9px;fill:#14432E;text-anchor:middle}
+.pin{cursor:pointer}
+.pin circle{stroke:#fff;stroke-width:2.5}
+.pin.sel circle{stroke:#14432E;stroke-width:3}
+.hud{position:absolute;left:16px;top:16px;display:flex;gap:8px;flex-wrap:wrap}
+.hud .f{background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:7px;padding:8px 14px;font-family:var(--disp);font-weight:700;font-size:12.5px;color:var(--forest)}
+.zrow{position:absolute;left:16px;right:16px;bottom:16px;display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:8px;padding:11px 16px;font-size:13px;color:var(--body)}
+.zrow input{flex:1;accent-color:var(--green);max-width:340px}
+.zrow b{font-family:var(--disp);color:var(--forest);font-weight:700;min-width:112px}
+.zrow .hint{margin-left:auto;font-size:12.5px;color:var(--grey)}
+.tcard{position:absolute;right:16px;top:16px;width:296px;background:var(--white);border:1px solid var(--line-2);border-radius:12px;padding:16px 18px}
+.tct{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.tct .n{font-family:var(--disp);font-weight:800;color:var(--forest);font-size:19px;letter-spacing:-.02em}
+.tct .s{font-size:13px;color:var(--grey);margin-top:1px}
+.tag{display:inline-flex;align-items:center;gap:6px;background:var(--green-soft);color:#1B6B45;border-radius:6px;padding:5px 10px;font-size:11.5px;font-weight:600;white-space:nowrap;font-family:var(--disp)}
+.tag i{width:7px;height:7px;border-radius:50%;background:var(--green);display:block}
+.tag.w{background:var(--amber-soft);color:#96570A}
+.tag.w i{background:var(--amber)}
+.trow{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:13.5px;margin-top:2px}
+.trow dt{color:var(--grey)}
+.trow dd{color:var(--forest);font-weight:500;text-align:right}
+.tcard .btn{margin-top:14px}
+@media(max-width:900px){
+  .tcard{position:static;width:auto;border:0;border-top:1px solid var(--line);border-radius:0}
+  .mapwrap svg{height:300px}
+  .zrow{position:static;border:0;border-top:1px solid var(--line);border-radius:0}
+  .zrow .hint{display:none}
+}
+
+.facts{display:flex;flex-wrap:wrap;margin-top:26px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.fact{flex:1;min-width:190px;padding:22px 24px;border-right:1px solid var(--line)}
+.fact:last-child{border-right:0}
+.fact b{display:block;font-family:var(--disp);font-weight:800;font-size:19px;color:var(--forest);letter-spacing:-.02em}
+.fact span{display:block;font-size:12.5px;color:var(--grey);margin-top:3px}
+
+/* ---------- care / phone ---------- */
+.care{display:grid;grid-template-columns:330px 1fr;gap:clamp(32px,5vw,72px);align-items:center;margin-top:44px}
+.phone{border:1px solid var(--line-2);border-radius:26px;padding:12px;background:var(--white)}
+.screen{background:var(--bg);border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+.sbar{display:flex;justify-content:space-between;padding:11px 16px 9px;font-size:11px;color:var(--grey);font-weight:600}
+.stitle{padding:6px 16px 14px}
+.stitle b{display:block;font-family:var(--disp);font-weight:800;color:var(--forest);font-size:17px}
+.stitle span{font-size:12.5px;color:var(--body)}
+.crow{background:var(--white);border-top:1px solid var(--line);padding:13px 16px;display:flex;align-items:center;gap:11px}
+.crow .cn{font-family:var(--disp);font-weight:800;font-size:12.5px;color:var(--forest);width:44px;flex:none}
+.crow .cm{flex:1;min-width:0}
+.crow .cm b{display:block;font-family:var(--disp);font-weight:700;color:var(--forest);font-size:14px}
+.crow .cm span{display:block;font-size:11.5px;color:var(--body);margin-top:1px}
+.crow .cm em{font-style:normal;color:var(--amber);font-weight:600}
+.wbtn{background:var(--green);color:#fff;border-radius:6px;padding:7px 12px;font-family:var(--disp);font-weight:700;font-size:11.5px;flex:none}
+.sfoot{padding:14px 16px;font-size:11.5px;color:var(--grey);text-align:center;border-top:1px solid var(--line);background:var(--white)}
+
+.lr.fresh{animation:landed 2.6s ease-out}
+@keyframes landed{0%{background:#EAF5EF}60%{background:#EAF5EF}100%{background:transparent}}
+.live-dot.off{background:var(--grey)!important;animation:none!important}
+.feed-win{position:relative;overflow:hidden;max-height:370px}
+.feed-win.rolling:after{content:"";position:absolute;left:0;right:0;bottom:0;height:56px;background:linear-gradient(rgba(255,255,255,0),#fff);pointer-events:none;z-index:2}
+.feed-win.rolling:before{content:"";position:absolute;left:0;right:0;top:0;height:28px;background:linear-gradient(#fff,rgba(255,255,255,0));pointer-events:none;z-index:2}
+.feed-track{will-change:transform}
+.feed-win.rolling .feed-track{animation:creep var(--roll,60s) linear infinite}
+.feed-win.rolling:hover .feed-track,
+.feed-win.rolling.held .feed-track{animation-play-state:paused}
+@keyframes creep{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+.feed-note{padding:11px 20px;border-top:1px solid var(--line);background:var(--bg);font-size:12.5px;color:var(--grey);text-align:center}
+.feed{margin:30px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--white)}
+.feed-h{padding:15px 20px;border-bottom:1px solid var(--line);background:var(--green-soft);font-family:var(--disp);font-weight:700;font-size:13.5px;color:#1B6B45}
+.fi{display:flex;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid var(--line);color:inherit}
+.fi:last-child{border-bottom:0}
+.fi:hover{background:var(--bg)}
+.fn{font-family:var(--disp);font-weight:800;font-size:14px;color:var(--forest);width:58px;flex:none}
+.fm{flex:1;min-width:0}
+.fs{font-family:var(--disp);font-weight:700;color:var(--forest);font-size:16px}
+.fx{font-size:13.5px;color:var(--body);margin-top:2px}
+.fx em{font-style:normal;color:var(--amber);font-weight:600}
+.feed .btn{flex:none}
+@media(max-width:640px){.fi{flex-wrap:wrap}.feed .btn{width:100%;margin-top:4px}}
+.pts{margin-top:30px}
+.prow{display:flex;align-items:center;gap:18px;padding:16px 0;border-top:1px solid var(--line)}
+.prow:last-child{border-bottom:1px solid var(--line)}
+.prow b{font-family:var(--disp);font-weight:800;font-size:30px;color:var(--forest);width:56px;flex:none;letter-spacing:-.03em}
+.prow.top b{color:var(--green)}
+.prow span{font-size:15px;color:var(--body-2)}
+.prow.top span{color:var(--forest);font-weight:600}
+.prow .mark{margin-left:auto;font-family:var(--disp);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--green);background:var(--green-soft);border-radius:5px;padding:5px 9px;white-space:nowrap}
+@media(max-width:900px){.care{grid-template-columns:1fr}.phone{max-width:330px}}
+
+/* ---------- ticket ---------- */
+.tk{display:grid;grid-template-columns:1fr 330px;gap:clamp(32px,5vw,64px);align-items:center;margin-top:44px}
+.ticket{background:var(--white);border:1px solid var(--forest);border-radius:12px;overflow:hidden}
+.tkt-top{background:var(--forest);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+.tkt-top b{font-family:var(--disp);font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.tkt-top span{font-size:11.5px;color:#8FC5A9}
+.tkt-mid{padding:26px 20px 22px;text-align:center;border-bottom:1px dashed var(--line-2)}
+.tkt-mid .no{font-family:var(--disp);font-weight:800;font-size:52px;color:var(--green);letter-spacing:-.04em;line-height:1}
+.tkt-mid .sp{font-family:var(--disp);font-weight:800;font-size:19px;color:var(--forest);margin-top:6px}
+.tkt-mid .la{font-size:12.5px;color:var(--grey);margin-top:4px}
+.tkt-bot{padding:18px 20px}
+.tkt-bot div{display:flex;justify-content:space-between;gap:12px;padding:6px 0;font-size:13px}
+.tkt-bot dt{color:var(--grey)}
+.tkt-bot dd{color:var(--forest);font-weight:500}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.chip{border:1px dashed var(--line-2);border-radius:8px;padding:11px 18px;font-size:13.5px;color:var(--grey);background:var(--bg)}
+.wa{margin-top:18px;background:#25D366;border-color:#25D366}
+.wa:hover{background:#1FB456;border-color:#1FB456}
+@media(max-width:900px){.tk{grid-template-columns:1fr}}
+
+/* ---------- faq ---------- */
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(30px,5vw,64px);margin-top:44px}
+.qi{padding:24px 0;border-top:1px solid var(--line)}
+.qi h4{font-family:var(--disp);font-weight:800;font-size:16.5px;color:var(--forest);margin-bottom:8px}
+.qi p{font-size:14.5px}
+@media(max-width:820px){.qa{grid-template-columns:1fr}}
+
+/* ---------- collage ---------- */
+.col{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px}
+.ph{border:1px solid var(--line);border-radius:10px;background:linear-gradient(150deg,#DEEAE2,#C6DCCF);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#7C9C89}
+.ph.a{grid-column:span 2;height:280px}
+.ph.b{height:180px}
+.ph.c{height:280px}
+.ph.d{height:180px;margin-top:-84px}
+@media(max-width:900px){.col{grid-template-columns:1fr 1fr}.ph.a{grid-column:span 2}.ph.d{margin-top:0}}
+
+/* ---------- close + footer ---------- */
+.end{background:var(--forest);color:#fff;padding:clamp(60px,7vw,96px) 0}
+.end h2{color:#fff;font-size:clamp(30px,4.2vw,48px);max-width:20ch}
+.end p{color:#8FC5A9;margin-top:16px;max-width:44ch;font-size:16.5px}
+.end .btn{margin-top:30px;background:#fff;color:var(--forest);border-color:#fff}
+.end .btn:hover{background:#E4F1EA;border-color:#E4F1EA}
+
+footer{border-top:1px solid var(--line);padding:50px 0 36px;background:var(--white)}
+.fg{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:34px}
+.fg p{font-size:14px;margin-top:14px;max-width:34ch}
+.fq{font-family:var(--disp);font-weight:700;color:var(--forest);font-size:14px;margin-top:18px;max-width:32ch;line-height:1.5}
+.fh{font-family:var(--disp);font-weight:800;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--forest);margin-bottom:14px}
+.fl{display:block;font-size:14px;margin-bottom:10px}
+.fl:hover{color:var(--green)}
+.fb{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-top:40px;padding-top:22px;border-top:1px solid var(--line);font-size:13px;color:var(--grey)}
+@media(max-width:900px){.fg{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none}
+.brand .mk{width:32px;height:32px;flex:none}
+.wm{font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:-.025em;color:var(--forest);white-space:nowrap}
+.wm .pm-i{position:relative;display:inline-block;font-size:inherit;padding:0;border:0;gap:0}
+.wm .pm-leaf{position:absolute;left:50%;bottom:1.05em;width:.30em;height:.30em;transform:translateX(calc(-50% + .045em)) rotate(-45deg)}
+.brand em{font-style:normal;font-family:var(--text);font-weight:400;font-size:12.5px;color:var(--grey)}
+@media(max-width:560px){
+  .brand .mk{width:34px;height:34px}
+  .wm{font-size:23px}
+  .brand em{display:none}            /* the Devanagari subtitle needs room it doesn't have */
+  .nav .btn,.nv .btn{padding:10px 15px;font-size:14px}
+}
+</style>
+<meta name="description" content="A free map of trees across India. Plant one, water it, or check on a tree near you — and help keep it alive. Most planted trees die because nobody comes back. PedMitra is how someone does.">
+<meta property="og:title" content="PedMitra — Keep India’s trees alive">
+<meta property="og:description" content="Plant a tree, water one, or check on a tree near you. Most planted trees die because nobody comes back — this is how someone does.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://pedmitra.in">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%2314432E%22/><path d=%22M16 28V15%22 stroke=%22white%22 stroke-width=%222.6%22 stroke-linecap=%22round%22/><path d=%22M16 17C8.5 17 4 12.5 4 5c7.5 0 12 4.5 12 12z%22 fill=%22white%22/><path d=%22M16 20c5.5 0 9-3.5 9-9-5.5 0-9 3.5-9 9z%22 fill=%22%232E9E63%22/></svg>">
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<style>
+#livemap{width:100%;height:520px;border-radius:14px}
+.mapwrap{position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:44px;background:#EAF3EE}
+.hud{position:absolute;left:16px;top:16px;z-index:2;display:flex;gap:7px;flex-wrap:wrap;max-width:60%}
+.hud .f{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:7px;padding:7px 12px;font-family:var(--disp);font-weight:700;font-size:12px;color:var(--forest)}
+.hud .f u{width:9px;height:9px;border-radius:50%;display:block}
+.tcard{position:absolute;right:16px;top:16px;z-index:2;width:300px;background:var(--white);border:1px solid var(--line-2);border-radius:12px;padding:16px 18px}
+.tcard.idle{display:flex;flex-direction:column;gap:6px;text-align:center;padding:22px 18px}
+.tcard.idle b{font-family:var(--disp);font-weight:800;color:var(--forest);font-size:15px}
+.tcard.idle span{font-size:13px;color:var(--grey)}
+.maptip{position:absolute;left:16px;bottom:16px;z-index:2;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:7px;padding:8px 13px;font-size:12.5px;color:var(--body)}
+.maplibregl-popup-content{font-family:var(--text);border-radius:10px;border:1px solid var(--line);padding:12px 14px}
+.pp b{display:block;font-family:var(--disp);font-weight:800;color:var(--forest);font-size:15px}
+.pp span{display:block;font-size:13px;color:var(--body);margin:2px 0 8px}
+.pp a{display:inline-block;background:var(--green);color:#fff;font-family:var(--disp);font-weight:700;font-size:13px;padding:8px 14px;border-radius:7px}
+@media(max-width:900px){
+  #livemap{height:400px}
+  .tcard{position:static;width:auto;margin:0;border:0;border-top:1px solid var(--line);border-radius:0}
+  .hud{max-width:none;position:static;padding:12px 12px 0;background:transparent}
+  .maptip{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nv">
+    <a href="#" class="brand"><svg class="mk" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 29V15" stroke="#14432E" stroke-width="2.4" stroke-linecap="round"/><path d="M16 17C8.5 17 4 12.5 4 5c7.5 0 12 4.5 12 12z" fill="#14432E"/><path d="M16 20c5.5 0 9-3.5 9-9-5.5 0-9 3.5-9 9z" fill="#2E9E63"/></svg> <span class="wm">PedM<span class="pm-i">ı<svg class="pm-leaf" viewBox="16 11 9 9" aria-hidden="true"><path d="M16 20c5.5 0 9-3.5 9-9-5.5 0-9 3.5-9 9z" fill="#2E9E63"/></svg></span>tra</span> <em>पेड़मित्र</em></a>
+    <span class="sp"></span>
+    <div class="nl">
+      <a href="#why">The Problem</a>
+      <a href="#how">How It Works</a>
+      <a href="#map">Live Map</a>
+      <a href="#care">Care for a Tree</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a href="app.html#/plant" class="btn sm">Plant a tree</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hg">
+    <div>
+      <span class="kicker">A free public tree registry for India</span>
+      <h1>A tree survives when<br>someone <span>comes back for it.</span></h1>
+      <p class="say">PedMitra is a free map of trees across India. Plant one, water it, or just check on a tree near you — whatever it takes to keep it alive. You don’t have to plant anything: a tree that already stands nearby just needs someone to come back for it.</p>
+      <div class="hact">
+        <a href="app.html#/plant" class="btn">Plant a tree</a>
+        <a href="app.html#/home" class="btn line">Water one near you</a>
+      </div>
+      <p class="tiny">Free for everyone. No organisation, no approval, no fee — ever.</p>
+    </div>
+
+    <div class="ledger">
+      <div class="lh">
+        <b>The Registry</b>
+        <i><span class="blip live-dot" id="live-dot"></span>Live across India</i>
+      </div>
+      <div id="ledger-rows"><div class="lr"><span class="nm" style="color:#94A3B8">Loading the registry…</span></div></div>
+      </div>
+  </div>
+</section>
+
+<!-- COUNTER BAND -->
+<div class="band">
+  <div class="wrap bg2">
+    <div class="big"><span id="s-reg">—</span><small>Trees registered, all time</small></div>
+    <div class="mini">
+      <div><b id="s-std">—</b><span>Still standing</span></div>
+      <div><b id="s-wat">—</b><span>Waterings logged</span></div>
+      <div><b id="s-spc">—</b><span>Native species</span></div>
+    </div>
+  </div>
+  <div class="wrap">
+    <p class="band-note" id="why-counts">A registration number is permanent. A living tree is not.</p>
+  </div>
+</div>
+
+<!-- WHY -->
+<section class="sec" id="why">
+  <div class="wrap spine">
+    <div class="rail"><div class="node on">01</div></div>
+    <div>
+      <span class="kicker">The Problem</span>
+      <h2>Planting is the easy half.</h2>
+
+      <div class="why" style="margin-top:32px">
+        <div>
+          <p class="say">India plants millions of trees every year, in drives and campaigns — and most of them die. Not because planting is hard, but because once the day ends and the photos are taken, nobody comes back to water them. PedMitra exists to fix that one thing: to make sure a planted tree is looked after until it can stand on its own. Here is what happens to a hundred saplings, left alone, in their first year.</p>
+
+          <div class="mort" aria-hidden="true">
+            <i></i><i class="d"></i><i></i><i></i><i class="d"></i><i></i><i class="d"></i><i class="d"></i><i></i><i></i><i class="d"></i><i></i><i class="d"></i><i></i><i></i><i class="d"></i><i class="d"></i><i></i><i class="d"></i><i></i><i class="d"></i><i></i><i></i><i class="d"></i><i></i>
+            <i class="d"></i><i></i><i class="d"></i><i class="d"></i><i></i><i class="d"></i><i></i><i></i><i class="d"></i><i></i><i class="d"></i><i class="d"></i><i></i><i></i><i class="d"></i><i></i><i class="d"></i><i></i><i class="d"></i><i class="d"></i><i></i><i class="d"></i><i></i><i></i><i class="d"></i>
+            <i></i><i class="d"></i><i></i><i class="d"></i><i class="d"></i><i></i><i></i><i class="d"></i><i></i><i class="d"></i><i></i><i class="d"></i><i class="d"></i><i></i><i class="d"></i><i></i><i></i><i class="d"></i><i class="d"></i><i></i><i class="d"></i><i></i><i class="d"></i><i></i><i class="d"></i>
+            <i class="d"></i><i></i><i></i><i class="d"></i><i></i><i class="d"></i><i></i><i class="d"></i><i></i><i class="d"></i><i class="d"></i><i></i><i class="d"></i><i></i><i class="d"></i><i class="d"></i><i></i><i></i><i class="d"></i><i></i><i class="d"></i><i class="d"></i><i></i><i class="d"></i><i></i>
+          </div>
+          <div class="mkey">
+            <span><u style="background:#2E9E63"></u> Alive after twelve months</span>
+            <span><u style="background:#DCE3DF"></u> Died because nobody watered it</span>
+          </div>
+
+          <div class="pull">
+            <p>"A tree survives because somebody living nearby decided it was theirs to look after. That person is almost never the one who planted it."</p>
+            <cite>The idea PedMitra is built on</cite>
+          </div>
+        </div>
+
+        <div class="shot">
+          Your field photo here
+          <span>Monsoon plantation drive</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="sec tint" id="how">
+  <div class="wrap spine">
+    <div class="rail"><div class="node on">02</div></div>
+    <div>
+      <span class="kicker">How It Works</span>
+      <h2>Three steps. Two of them belong to strangers.</h2>
+
+      <div class="tl">
+        <div class="tstep">
+          <div class="lbl">Step one<b>You plant</b></div>
+          <div>
+            <h3>Photograph it where it stands</h3>
+            <p>Camera opens, GPS is caught while you shoot, pick the species. Twelve seconds.</p>
+          </div>
+          <div class="note"><b>Fast enough</b>A team can register a hundred trees in an afternoon.</div>
+        </div>
+
+        <div class="tstep">
+          <div class="lbl">Step two<b>It's numbered</b></div>
+          <div>
+            <h3>A number that outlives you</h3>
+            <p>Permanent, never reused — not even if the tree dies. It records the moment your tree joined the registry.</p>
+          </div>
+          <div class="note"><b>It's a fact, not a prize</b>It stays true whether the tree thrives or fails.</div>
+        </div>
+
+        <div class="tstep">
+          <div class="lbl">Step three<b>Somebody else waters it</b></div>
+          <div>
+            <h3>The part that keeps it alive</h3>
+            <p>Anyone nearby sees it's dry, walks over, waters it, logs it. No permission needed. You'll never meet.</p>
+          </div>
+          <div class="note"><b>Nobody owns a tree here</b>Planting it doesn't make it yours. It belongs to the street.</div>
+        </div>
+      </div>
+  </div>
+</section>
+
+<!-- PROMISES -->
+<section class="sec">
+  <div class="wrap spine">
+    <div class="rail"><div class="node on">03</div></div>
+    <div>
+      <span class="kicker">Where We Stand</span>
+      <h2>What we'll do, and what we never will.</h2>
+
+      <div class="split">
+        <div class="half">
+          <h3>We will</h3>
+          <div class="li"><svg width="19" height="19" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#2E9E63" stroke-width="1.4"/><path d="M6 10.2l2.6 2.6L14 7.4" stroke="#2E9E63" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Make every public tree <b>findable by whoever lives nearest</b>.</span></div>
+          <div class="li"><svg width="19" height="19" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#2E9E63" stroke-width="1.4"/><path d="M6 10.2l2.6 2.6L14 7.4" stroke="#2E9E63" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Keep a tree at your <b>home completely private</b>. Off the map, always.</span></div>
+          <div class="li"><svg width="19" height="19" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#2E9E63" stroke-width="1.4"/><path d="M6 10.2l2.6 2.6L14 7.4" stroke="#2E9E63" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Show the trees that <b>died</b>, not only the ones that lived.</span></div>
+          <div class="li"><svg width="19" height="19" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#2E9E63" stroke-width="1.4"/><path d="M6 10.2l2.6 2.6L14 7.4" stroke="#2E9E63" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Stay <b>free for everyone, forever</b>.</span></div>
+        </div>
+        <div class="half">
+          <h3>We won't</h3>
+          <div class="li"><svg width="19" height="19" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#94A3B8" stroke-width="1.4"/><path d="M7 7l6 6M13 7l-6 6" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round"/></svg><span>Send a stranger to anybody's doorstep.</span></div>
+          <div class="li"><svg width="19" height="19" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#94A3B8" stroke-width="1.4"/><path d="M7 7l6 6M13 7l-6 6" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round"/></svg><span>Sell corporate plans, CSR packages or subscriptions.</span></div>
+          <div class="li"><svg width="19" height="19" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#94A3B8" stroke-width="1.4"/><path d="M7 7l6 6M13 7l-6 6" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round"/></svg><span>Publish carbon maths. We count trees, not credits.</span></div>
+          <div class="li"><svg width="19" height="19" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#94A3B8" stroke-width="1.4"/><path d="M7 7l6 6M13 7l-6 6" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round"/></svg><span>Sell your number. It signs you in. That's all it does.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAP -->
+<section class="sec tint" id="map">
+  <div class="wrap spine">
+    <div class="rail"><div class="node on">04</div></div>
+    <div>
+      <span class="kicker">The Live Map</span>
+      <h2>Zoom in until the trees are individuals.</h2>
+      <p class="say">Move around it like any other map. Tap a tree and you get its photo, its planter, and the last time anybody gave it water.</p>
+
+      <div class="mapwrap">
+        <div id="livemap"></div>
+        <div class="hud">
+          <span class="f"><u style="background:#2E9E63"></u>Healthy</span>
+          <span class="f"><u style="background:#D97706"></u>Needs water</span>
+          <span class="f"><u style="background:#DC2626"></u>Struggling</span>
+          <span class="f"><u style="background:#94A3B8"></u>Did not survive</span>
+        </div>
+        <div class="tcard idle" id="tcard">
+          <b>Nothing selected</b>
+          <span>Scroll to zoom, drag to move, and tap any tree to see who planted it.</span>
+        </div>
+        <div class="maptip" id="maptip">Scroll to zoom &middot; drag to pan &middot; tap a tree</div>
+      </div>
+
+      <div class="facts">
+        <div class="fact"><b>Never reused</b><span>Registration numbers</span></div>
+        <div class="fact"><b>GPS located</b><span>Every single tree</span></div>
+        <div class="fact"><b id="f-wat">—</b><span>Waterings logged</span></div>
+        <div class="fact"><b>Free, always</b><span>Cost to use</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARE -->
+<section class="sec" id="care">
+  <div class="wrap spine">
+    <div class="rail"><div class="node on">05</div></div>
+    <div>
+      <span class="kicker">The Part That Matters</span>
+      <h2>You don't have to plant anything to be useful.</h2>
+      <p class="say">These are real trees, on real streets, that nobody has come back for.</p>
+
+      <div class="feed" id="thirsty">
+        <div class="feed-h">Trees waiting for water</div>
+        <div class="fi"><div class="fm"><div class="fx">Reading the registry&hellip;</div></div></div>
+      </div>
+
+      <div class="pts">
+        <div class="prow"><b>10</b><span>for planting a tree</span></div>
+        <div class="prow"><b>15</b><span>for watering a tree</span></div>
+        <div class="prow top"><b>25</b><span>for watering a tree you didn't plant</span><span class="mark">The whole point</span></div>
+      </div>
+      <p class="say">That table is the argument of the whole app, written as a number.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TICKET -->
+<section class="sec tint">
+  <div class="wrap spine">
+    <div class="rail"><div class="node on">06</div></div>
+    <div>
+      <span class="kicker">Your Tree Card</span>
+      <h2>Proof you can put in a WhatsApp message.</h2>
+
+      <div class="tk">
+        <div>
+          <p class="say" style="margin-top:0">Not a certificate from an authority — nobody here is an authority. Just the facts about your tree, on a card you can send to anyone.</p>
+          <p class="say"><b style="color:var(--forest);font-weight:600">Then challenge three people.</b> When they plant, their trees join yours on the map.</p>
+          <div class="chips">
+            <span class="chip">+ a friend</span>
+            <span class="chip">+ a friend</span>
+            <span class="chip">+ a friend</span>
+          </div>
+          <a href="app.html#/plant" class="btn wa">Plant one and get your card</a>
+        </div>
+
+        <div class="ticket">
+          <div class="tkt-top"><b>PedMitra Registry</b><span>India</span></div>
+          <div class="tkt-mid">
+            <div class="no" id="tk-no">#1</div>
+            <div class="sp" id="tk-sp">Waiting</div>
+            <div class="la" id="tk-la">Nobody has planted the first one yet</div>
+          </div>
+          <div class="tkt-bot" id="tk-bot">
+            <div><dt>Planted</dt><dd>&mdash;</dd></div>
+            <div><dt>By</dt><dd>&mdash;</dd></div>
+            <div><dt>Status</dt><dd>&mdash;</dd></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec" id="faq">
+  <div class="wrap spine">
+    <div class="rail"><div class="node on">07</div></div>
+    <div>
+      <span class="kicker">Questions</span>
+      <h2>Things people ask before their first tree.</h2>
+
+      <div class="qa">
+        <div class="qi">
+          <h4>Do I need to belong to an NGO or a company?</h4>
+          <p>No. No invitation, no approval. If you have an email, you can register a tree in two minutes.</p>
+        </div>
+        <div class="qi">
+          <h4>I planted a tree at home. Will strangers turn up?</h4>
+          <p>No. Mark it as a home tree and it never appears on the map, in anybody's list, or anywhere in our data. Only you can see it. It still gets a number and still counts.</p>
+        </div>
+        <div class="qi">
+          <h4>What does the tree number mean?</h4>
+          <p>It records how many trees existed when yours joined. Tree #1,247 was the 1,247th ever registered. Permanent, and never reused — not even if the tree dies.</p>
+        </div>
+        <div class="qi">
+          <h4>What stops people registering fake trees?</h4>
+          <p>Photos are taken live in the app, never uploaded. The same tree can’t be registered twice on the same spot. And every entry is tied to a verified account, so a bad actor can be blocked.</p>
+        </div>
+      </div>
+  </div>
+</section>
+
+<!-- COLLAGE -->
+<section class="sec tint">
+  <div class="wrap spine">
+    <div class="rail"><div class="node on">08</div></div>
+    <div>
+      <span class="kicker">From the Registry</span>
+      <h2>Real trees, real streets.</h2>
+      
+
+      <div class="col">
+        <div class="ph a">Photo</div>
+        <div class="ph b">Photo</div>
+        <div class="ph b">Photo</div>
+        <div class="ph c">Photo</div>
+        <div class="ph d">Photo</div>
+        <div class="ph d">Photo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- END -->
+<section class="end">
+  <div class="wrap">
+    <h2>There is a tree near you that nobody is coming back for.</h2>
+    <p>Two minutes and a bucket. We can tell you where it is.</p>
+    <a href="app.html#/map" class="btn">Open the map</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="fg">
+      <div>
+        <a href="#" class="brand"><svg class="mk" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 29V15" stroke="#14432E" stroke-width="2.4" stroke-linecap="round"/><path d="M16 17C8.5 17 4 12.5 4 5c7.5 0 12 4.5 12 12z" fill="#14432E"/><path d="M16 20c5.5 0 9-3.5 9-9-5.5 0-9 3.5-9 9z" fill="#2E9E63"/></svg> <span class="wm">PedM<span class="pm-i">ı<svg class="pm-leaf" viewBox="16 11 9 9" aria-hidden="true"><path d="M16 20c5.5 0 9-3.5 9-9-5.5 0-9 3.5-9 9z" fill="#2E9E63"/></svg></span>tra</span> <em>पेड़मित्र</em></a>
+        <p>A free, public registry of every tree planted in India.</p>
+        <p class="fq">The person who sits in its shade will never know your name. Plant it anyway.</p>
+      </div>
+      <div>
+        <div class="fh">The App</div>
+        <a href="app.html#/plant" class="fl">Plant a tree</a>
+        <a href="app.html#/map" class="fl">Live map</a>
+        <a href="app.html#/home" class="fl">Trees needing water</a>
+        <a href="#" class="fl">Your tree card</a>
+      </div>
+      <div>
+        <div class="fh">About</div>
+        <a href="#why" class="fl">The problem</a>
+        <a href="#how" class="fl">How it works</a>
+        <a href="#faq" class="fl">FAQ</a>
+        <a href="#" class="fl">Open data</a>
+      </div>
+      <div>
+        <div class="fh">Legal</div>
+        <a href="#" class="fl">Privacy</a>
+        <a href="#" class="fl">Terms</a>
+        <a href="#" class="fl">Contact</a>
+      </div>
+    </div>
+    <div class="fb">
+      <span>© 2026 PedMitra · pedmitra.in</span>
+      <span>Free forever · no fees, no plans, no sponsors</span>
+    </div>
+  </div>
+</footer>
+
+
+<script src="config.js"></script>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const C = window.PEDMITRA || {};
+const U = (C.SUPABASE_URL || '').trim()
+  .replace(/\s+/g, '')
+  .replace(/\/+$/, '')
+  .replace(/(\.supabase\.co).*$/i, '$1');
+
+if (U && !U.startsWith('PASTE')) {
+  const sb = createClient(U, (C.SUPABASE_ANON_KEY || '').trim());
+
+  const n = v => Number(v).toLocaleString('en-IN');
+  const ago = t => {
+    if (!t) return 'never';
+    const h = Math.floor((Date.now() - new Date(t)) / 3600000);
+    if (h < 1) return 'just now';
+    if (h < 24) return h + 'h ago';
+    const d = Math.floor(h / 24);
+    return d === 1 ? 'yesterday' : d + ' days ago';
+  };
+  const DOT  = { healthy:'g', needs_water:'a', struggling:'r', dead:'x' };
+  const WORD = { healthy:'Standing', needs_water:'Needs water', struggling:'Struggling', dead:'Did not survive' };
+  const el = id => document.getElementById(id);
+
+  // Three sections, three separate jobs. If one falls over, the other
+  // two carry on and the broken one says so in its own place.
+
+  async function counters(){
+    const { data, error } = await sb.rpc('registry_stats');
+    if (error) throw error;
+    el('s-reg').textContent = n(data.registered);
+    el('s-std').textContent = n(data.standing);
+    el('s-wat').textContent = n(data.waterings);
+    el('s-spc').textContent = n(data.species);
+    const fw = el('f-wat');
+    if (fw) fw.textContent = n(data.waterings);
+
+    // Somebody will count the dots on the map, get a smaller number than
+    // the one in this band, and assume we're lying. So do the arithmetic
+    // for them, out loud, with the real figures.
+    // Somebody will count the dots on the map, find fewer than the number
+    // above, and assume we are inflating it. So show the arithmetic.
+    const why = el('why-counts');
+    if (why) {
+      const hidden = Math.max(0, Number(data.registered) - Number(data.public));
+      const base = 'A registration number is permanent. A living tree is not. ' +
+                   'And a plant at somebody\'s home is counted here but never mapped \u2014 nobody is sent to a stranger\'s door.';
+      why.innerHTML = hidden > 0
+        ? base + '<span class="sum"><b>' + n(data.registered) + '</b> <i>registered</i> \u2212 <b>' +
+          n(hidden) + '</b> <i>at people\u2019s homes</i> = <b>' + n(data.public) + '</b> <i>on the map</i></span>'
+        : base;
+    }
+  }
+
+  async function ledger(){
+    const box = el('ledger-rows');
+    const { data, error } = await sb.rpc('recent_trees', { n: 8 });
+    if (error) throw error;
+
+    if (!data || !data.length) {
+      box.innerHTML = '<div class="lr" style="padding:34px 18px;display:block;text-align:center">' +
+        '<span class="nm" style="display:block;font-weight:700">The registry is empty.</span>' +
+        '<span class="ev" style="display:block;margin-top:4px">Nobody has planted anything yet. Tree #1 is still available.</span></div>';
+      return;
+    }
+
+    box.innerHTML = data.map(r => {
+      // On the very first load nothing is "new". After that, a tree we
+      // haven't seen before gets a moment of green before settling in.
+      const isNew = !first && !known.has(r.tree_no);
+      return `
+      <div class="lr${isNew ? ' fresh' : ''}">
+        <span class="num">#${r.tree_no}</span>
+        <span class="nm">${r.species}${r.city ? ' <u>\u00b7 ' + r.city + '</u>' : ''}</span>
+        <span class="ev">${WORD[r.state] || ''} \u00b7 ${ago(r.planted)}</span>
+        <span class="dt ${DOT[r.state] || 'g'}"></span>
+      </div>`;
+    }).join('');
+
+    data.forEach(r => known.add(r.tree_no));
+    first = false;
+
+    // the card shows the newest real tree
+    const full = await sb.rpc('get_tree', { p_tree_no: data[0].tree_no });
+    const t = full.data;
+    if (!t) return;
+    el('tk-no').textContent = '#' + n(t.tree_no);
+    el('tk-sp').textContent = t.species;
+    el('tk-la').textContent = t.botanical || '';
+    el('tk-bot').innerHTML =
+      '<div><dt>Planted</dt><dd>' + new Date(t.planted_on).toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' }) + '</dd></div>' +
+      '<div><dt>By</dt><dd>' + t.planter + '</dd></div>' +
+      '<div><dt>Status</dt><dd>' + (WORD[t.state] || '') + ' \u00b7 watered ' + ago(t.last_cared) + '</dd></div>';
+  }
+
+  async function thirsty(){
+    const feed = el('thirsty');
+    const { data, error } = await sb.rpc('thirstiest_trees', { n: 50 });
+    if (error) throw error;
+
+    if (!data || !data.length) {
+      feed.innerHTML = '<div class="feed-h">Trees waiting for water</div>' +
+        '<div class="fi" style="display:block;padding:32px 24px;text-align:center">' +
+        '<div class="fs">Not one tree is thirsty right now.</div>' +
+        '<div class="fx">Every registered tree has been watered \u2014 or nobody has planted one yet. Both are worth fixing.</div></div>';
+      return;
+    }
+
+    const row = t => `
+      <a class="fi" href="app.html#/tree/${t.tree_no}">
+        <span class="fn">#${t.tree_no}</span>
+        <div class="fm">
+          <div class="fs">${t.species}</div>
+          <div class="fx">${t.city ? t.city + ' \u00b7 ' : ''}<em>${t.state === 'struggling' ? 'marked struggling' : 'dry for ' + t.days_dry + ' days'}</em> \u00b7 planted by ${t.planter}</div>
+        </div>
+        <span class="btn sm">Water it</span>
+      </a>`;
+
+    const many = data.length > 5;
+    const rows = data.map(row).join('');
+
+    // A short list has nothing to scroll. A long one is duplicated so the
+    // loop has no seam — you never see it snap back to the top.
+    feed.innerHTML =
+      '<div class="feed-h">' + data.length +
+        (data.length === 1 ? ' tree is' : ' trees are') + ' waiting for water</div>' +
+      '<div class="feed-win' + (many ? ' rolling' : '') + '" id="feed-win">' +
+        '<div class="feed-track">' + rows + (many ? rows : '') + '</div>' +
+      '</div>' +
+      (many ? '<div class="feed-note">Hover or touch to stop it, then take one</div>' : '');
+
+    if (!many) return;
+
+    const win = el('feed-win');
+    win.style.setProperty('--roll', (data.length * 4.5) + 's');   // ~4.5s a tree
+
+    // On a phone there is no hover. Touching it must still stop it, or the
+    // button you are reaching for slides out from under your thumb.
+    win.addEventListener('touchstart', () => win.classList.add('held'), { passive:true });
+    win.addEventListener('touchend',   () => setTimeout(() => win.classList.remove('held'), 2500));
+
+    // And if the reader has asked the machine to stop moving things, it stops.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      win.classList.remove('rolling');
+      win.style.maxHeight = '370px';
+      win.style.overflowY = 'auto';
+      win.querySelector('.feed-track').innerHTML = rows;
+    }
+  }
+
+  // ------------------------------------------------------------
+  // Live.
+  //
+  // Supabase tells us the moment a tree is registered or watered.
+  // The message doesn't carry the species name or the planter --
+  // those live in other tables -- so we treat it as a doorbell:
+  // something happened, go and ask what the registry looks like now.
+  // Slower than reconstructing the row by hand, and never wrong.
+  // ------------------------------------------------------------
+
+  let known = new Set();          // tree numbers we've already shown
+  let first = true;
+  let pending = null;
+
+  async function refresh(){
+    await Promise.all([ counters(), ledger() ]);
+  }
+
+  function ring(){                // debounced: ten trees at once, one redraw
+    clearTimeout(pending);
+    pending = setTimeout(() => { refresh().catch(() => {}); }, 700);
+  }
+
+  counters().catch(e => {
+    ['s-reg','s-std','s-wat','s-spc'].forEach(i => { el(i).textContent = '?'; });
+    console.error('counters:', e.message);
+  });
+
+  ledger().catch(e => {
+    el('ledger-rows').innerHTML = '<div class="lr" style="padding:30px 18px;display:block;text-align:center">' +
+      '<span class="nm" style="display:block;font-weight:700;color:#DC2626">Can\'t reach the registry</span>' +
+      '<span class="ev" style="display:block;margin-top:4px">' + (e.message || 'Unknown error') + '</span></div>';
+  });
+
+  thirsty().catch(e => {
+    el('thirsty').innerHTML = '<div class="feed-h">Trees waiting for water</div>' +
+      '<div class="fi" style="display:block;padding:28px 24px;text-align:center">' +
+      '<div class="fs" style="color:#DC2626">Can\'t read the registry</div>' +
+      '<div class="fx">' + (e.message || 'Unknown error') + '</div></div>';
+  });
+
+  const dot = el('live-dot');
+  const alive = on => { if (dot) dot.classList.toggle('off', !on); };
+
+  sb.channel('registry')
+    .on('postgres_changes', { event:'INSERT', schema:'public', table:'trees'     }, ring)
+    .on('postgres_changes', { event:'UPDATE', schema:'public', table:'trees'     }, ring)
+    .on('postgres_changes', { event:'INSERT', schema:'public', table:'care_logs' }, ring)
+    .subscribe(status => {
+      // If the socket dies, the green dot goes grey. A panel that claims to
+      // be live while quietly frozen is worse than one that admits it isn't.
+      alive(status === 'SUBSCRIBED');
+    });
+
+  // Phones drop websockets in lifts, in basements, on the Metro. This is the
+  // floor beneath the socket: whatever happens, the panel is never more than
+  // a minute stale. It sleeps while the tab is in the background.
+  setInterval(() => {
+    if (document.visibilityState === 'visible') refresh().catch(() => {});
+  }, 60000);
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') refresh().catch(() => {});
+  });
+}
+</script>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const C = window.PEDMITRA || {};
+const U = (C.SUPABASE_URL || '').trim().replace(/\s+/g,'').replace(/\/+$/,'').replace(/(\.supabase\.co).*$/i,'$1');
+if (U && !U.startsWith('PASTE') && window.maplibregl) {
+  const sb = createClient(U, (C.SUPABASE_ANON_KEY || '').trim());
+  const COLOUR = { healthy:'#2E9E63', needs_water:'#D97706', struggling:'#DC2626', dead:'#94A3B8' };
+  const WORD   = { healthy:'Healthy', needs_water:'Needs water', struggling:'Struggling', dead:'Did not survive' };
+  const CLS    = { healthy:'tag', needs_water:'tag w', struggling:'tag b', dead:'tag x' };
+  const ago = t => {
+    if (!t) return 'never';
+    const d = Math.floor((Date.now() - new Date(t)) / 86400000);
+    return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago';
+  };
+
+  const map = new maplibregl.Map({
+    container: 'livemap',
+    style: 'https://tiles.openfreemap.org/styles/liberty',
+    center: [78.9, 22.6],
+    zoom: 3.6,
+    attributionControl: { compact: true }
+  });
+  map.addControl(new maplibregl.NavigationControl(), 'bottom-right');
+  map.addControl(new maplibregl.GeolocateControl({ trackUserLocation: false }), 'bottom-right');
+
+  map.on('load', () => {
+    map.addSource('trees', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: [] },
+      cluster: true, clusterRadius: 46, clusterMaxZoom: 13
+    });
+    map.addLayer({ id:'clusters', type:'circle', source:'trees', filter:['has','point_count'],
+      paint:{ 'circle-color':'#2E9E63','circle-opacity':.92,
+              'circle-stroke-color':'#fff','circle-stroke-width':2.5,
+              'circle-radius':['step',['get','point_count'],17,10,23,50,31,200,42] }});
+    map.addLayer({ id:'cluster-count', type:'symbol', source:'trees', filter:['has','point_count'],
+      layout:{ 'text-field':['get','point_count_abbreviated'], 'text-size':13,
+               'text-font':['Noto Sans Bold'] },
+      paint:{ 'text-color':'#fff' }});
+    map.addLayer({ id:'tree', type:'circle', source:'trees', filter:['!',['has','point_count']],
+      paint:{ 'circle-radius':['interpolate',['linear'],['zoom'],3,6,10,7,16,8],
+              'circle-stroke-color':'#fff','circle-stroke-width':2,
+              'circle-color':['match',['get','state'],
+                'needs_water','#D97706','struggling','#DC2626','dead','#94A3B8','#2E9E63'] }});
+
+    map.on('click','clusters', e => {
+      const f = map.queryRenderedFeatures(e.point, { layers:['clusters'] })[0];
+      map.getSource('trees').getClusterExpansionZoom(f.properties.cluster_id)
+        .then(z => map.easeTo({ center: f.geometry.coordinates, zoom: z }));
+    });
+    map.on('click','tree', async e => {
+      const p = e.features[0].properties;
+      const card = document.getElementById('tcard');
+      card.className = 'tcard';
+      card.innerHTML = '<span style="font-size:13px;color:#94A3B8">Loading tree #' + p.tree_no + '…</span>';
+      const { data: t } = await sb.rpc('get_tree', { p_tree_no: Number(p.tree_no) });
+      if (!t) return;
+      const photo = (t.photos && t.photos[0])
+        ? '<img src="' + t.photos[0].url + '" alt="" style="width:100%;height:110px;object-fit:cover;border-radius:8px;margin-bottom:12px">' : '';
+      card.innerHTML = photo +
+        '<div class="tct"><div><div class="n">Tree #' + t.tree_no + '</div>' +
+        '<div class="s">' + t.species + '</div></div>' +
+        '<span class="' + (CLS[t.state]||'tag') + '"><i></i>' + (WORD[t.state]||'') + '</span></div>' +
+        '<div class="trow"><dt>Planted by</dt><dd>' + t.planter + '</dd></div>' +
+        '<div class="trow"><dt>Last watered</dt><dd>' + ago(t.last_cared) + '</dd></div>' +
+        '<a class="btn wide sm" style="margin-top:14px" href="app.html#/tree/' + t.tree_no + '">Open this tree</a>';
+    });
+    ['tree','clusters'].forEach(l => {
+      map.on('mouseenter', l, () => map.getCanvas().style.cursor = 'pointer');
+      map.on('mouseleave', l, () => map.getCanvas().style.cursor = '');
+    });
+
+    const tip = document.getElementById('maptip');
+    const say = (msg, bad) => {
+      if (!tip) return;
+      tip.textContent = msg;
+      tip.style.color = bad ? '#DC2626' : '';
+      tip.style.fontWeight = bad ? '600' : '';
+    };
+
+    const refresh = async () => {
+      // Below city zoom, take every tree there is. A lone tree in Noida
+      // must not go missing on a view of the whole country.
+      const z = map.getZoom();
+      const b = map.getBounds();
+      const res = z < 9
+        ? await sb.rpc('all_trees', { max_rows: 5000 })
+        : await sb.rpc('trees_in_view', {
+            min_lng: Math.max(-180, b.getWest()),
+            min_lat: Math.max(-90,  b.getSouth()),
+            max_lng: Math.min(180,  b.getEast()),
+            max_lat: Math.min(90,   b.getNorth()),
+            max_rows: 5000
+          });
+
+      if (res.error) { say('Map error: ' + res.error.message, true); return; }
+      const data = res.data;
+      const count = (data || []).length;
+      say(count === 0
+        ? 'No public trees to show yet'
+        : count + (count === 1 ? ' tree' : ' trees') + ' on the map \u00b7 tap one');
+
+      const src = map.getSource('trees');
+      if (!src) return;
+      src.setData({
+        type:'FeatureCollection',
+        features: (data || []).map(t => ({
+          type:'Feature',
+          geometry:{ type:'Point', coordinates:[t.lng, t.lat] },
+          properties:{ tree_no:t.tree_no, species:t.species, state:t.state, planter:t.planter }
+        }))
+      });
+    };
+    (async () => {
+      await refresh();
+      // If there are trees, show them. A map of India with three dots on
+      // it that you have to hunt for is not a map, it's a puzzle.
+      const r = await sb.rpc('all_trees', { max_rows: 5000 });
+      if (!r.error && r.data && r.data.length) {
+        const bb = new maplibregl.LngLatBounds();
+        r.data.forEach(t => bb.extend([t.lng, t.lat]));
+        map.fitBounds(bb, { padding: 80, maxZoom: 13, duration: 0 });
+      }
+    })();
+    map.on('moveend', refresh);
+  });
+}
+</script>
+</body>
+</html>
