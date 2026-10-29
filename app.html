@@ -1207,13 +1207,16 @@ async function route(){
 window.addEventListener('hashchange', route);
 
 // When the magic link brings you back, Supabase swaps the code for a session.
-// That fires this, and we redraw.
-sb.auth.onAuthStateChange(async () => {
-  await loadMe();
-  if (location.search.includes('code=')) {
-    history.replaceState({}, '', location.pathname + (location.hash || '#/home'));
-  }
-  route();
+// That fires this, and we redraw. The work is pushed out of the callback
+// with setTimeout: calling Supabase from inside it can lock up sign-in.
+sb.auth.onAuthStateChange(() => {
+  setTimeout(async () => {
+    await loadMe();
+    if (location.search.includes('code=')) {
+      history.replaceState({}, '', location.pathname + (location.hash || '#/home'));
+    }
+    route();
+  }, 0);
 });
 
 await loadMe();
