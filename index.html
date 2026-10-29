@@ -350,9 +350,81 @@ footer{border-top:1px solid var(--line);padding:50px 0 36px;background:var(--whi
   .hud{max-width:none;position:static;padding:12px 12px 0;background:transparent}
   .maptip{display:none}
 }
+
+/* ---------- glass over a shaded road ----------
+   The page sits on a sunlit road under a tree: a fixed layer of
+   dappled shade (img/canopy.svg) that sways slowly, and every
+   section is a pane of frosted glass lying on top of it. */
+:root{
+  --white:rgba(255,255,255,.74);
+  --bg:rgba(244,249,246,.58);
+  --line:rgba(20,67,46,.11);
+  --line-2:rgba(20,67,46,.18);
+  --body:#4A5868;
+  --grey:#6A7889;
+  --gut:clamp(10px,2.6vw,34px);
+  --glass:rgba(255,255,255,.66);
+  --glass-tint:rgba(236,246,240,.62);
+  --glass-edge:rgba(255,255,255,.7);
+  --glass-fx:blur(22px) saturate(1.7);
+  --glass-shadow:0 1px 0 rgba(255,255,255,.75) inset,0 34px 70px -34px rgba(14,49,34,.42);
+  --sheen:linear-gradient(170deg,rgba(255,255,255,.42),rgba(255,255,255,0) 38%);
+}
+body{background:#E4E8DC}
+.canopy{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .22 0 0 0 0 .18 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+             linear-gradient(160deg,#EEF0E6,#DDE3D5 45%,#E9E3CF)}
+/* the shade drifts a little as you scroll (--drift is set by the script at the end of the page) */
+.canopy:before{content:"";position:absolute;inset:-7%;background:url(img/canopy.svg) center/cover no-repeat;
+  translate:0 calc(var(--drift,0) * -5vh);will-change:transform;animation:sway 18s ease-in-out infinite alternate}
+.canopy:after{content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 45% at 82% 6%,rgba(255,241,204,.55),transparent 70%),
+             radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(14,49,34,.16))}
+@keyframes sway{
+  0%{transform:translate3d(-1.2%,-.6%,0) rotate(-.7deg) scale(1.02)}
+  50%{transform:translate3d(.4%,.5%,0) rotate(.2deg) scale(1.03)}
+  100%{transform:translate3d(1.2%,.9%,0) rotate(.8deg) scale(1.045)}
+}
+
+nav{background:rgba(255,255,255,.58);-webkit-backdrop-filter:var(--glass-fx);backdrop-filter:var(--glass-fx);border-bottom:1px solid rgba(255,255,255,.55);box-shadow:0 10px 30px -20px rgba(14,49,34,.35)}
+
+.hero,.sec,.end{background:transparent;border-top:0;padding:var(--gut) var(--gut) 0}
+.sec.tint{background:transparent}
+footer{background:transparent;border-top:0;padding:var(--gut)}
+.hero>.wrap,.sec>.wrap,.end>.wrap,footer>.wrap,.band{
+  border-radius:28px;border:1px solid var(--glass-edge);box-shadow:var(--glass-shadow);
+  -webkit-backdrop-filter:var(--glass-fx);backdrop-filter:var(--glass-fx)}
+.hero>.wrap,.sec>.wrap,footer>.wrap{background:var(--sheen),var(--glass);padding:clamp(40px,6vw,88px) clamp(22px,4.5vw,64px)}
+.hero>.wrap{background:var(--sheen),rgba(255,255,255,.6)}
+.sec.tint>.wrap{background:var(--sheen),var(--glass-tint)}
+footer>.wrap{padding-top:clamp(34px,4vw,50px);padding-bottom:clamp(24px,3vw,36px)}
+
+/* the two forest panes: deep green glass, never black */
+.band,.end>.wrap{border-color:rgba(255,255,255,.16);box-shadow:0 1px 0 rgba(255,255,255,.14) inset,0 34px 70px -30px rgba(8,30,20,.55)}
+.band{max-width:1220px;margin:var(--gut) auto 0;width:calc(100% - 2*var(--gut));
+  background:linear-gradient(170deg,rgba(255,255,255,.1),rgba(255,255,255,0) 40%),rgba(17,62,42,.76);padding:clamp(34px,4vw,48px) 0}
+.end>.wrap{background:linear-gradient(170deg,rgba(255,255,255,.1),rgba(255,255,255,0) 40%),rgba(20,67,46,.8);padding:clamp(48px,6vw,84px) clamp(22px,4.5vw,64px)}
+
+.node{background:#F3F8F4}
+.ph,.shot,.mapwrap{box-shadow:0 18px 40px -26px rgba(14,49,34,.5)}
+.feed-win.rolling:before,.feed-win.rolling:after{display:none}
+.feed-win.rolling{-webkit-mask-image:linear-gradient(transparent,#000 28px,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(transparent,#000 28px,#000 calc(100% - 56px),transparent)}
+
+/* phones: same look, held still, lighter blur -- re-blurring every pane
+   over a moving background costs too much battery */
+@media(max-width:900px),(hover:none){
+  :root{--glass-fx:blur(14px) saturate(1.6)}
+  .canopy:before{animation:none}
+  .hero>.wrap,.sec>.wrap,.end>.wrap,footer>.wrap,.band{border-radius:20px}
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  :root{--glass:rgba(255,255,255,.9);--glass-tint:rgba(240,248,243,.9)}
+  .hero>.wrap{background:rgba(255,255,255,.88)}
+}
 </style>
 </head>
 <body>
+<div class="canopy" aria-hidden="true"></div>
 
 <nav>
   <div class="wrap nv">
@@ -1060,6 +1132,21 @@ if (U && !U.startsWith('PASTE') && window.maplibregl) {
     map.on('moveend', refresh);
   });
 }
+</script>
+<script>
+// Walking down the road: the tree shade drifts a little as you scroll.
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const root = document.documentElement;
+  let queued = false;
+  const set = () => {
+    queued = false;
+    const max = root.scrollHeight - innerHeight;
+    root.style.setProperty('--drift', max > 0 ? (scrollY / max).toFixed(4) : 0);
+  };
+  addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(set); } }, { passive: true });
+  set();
+})();
 </script>
 </body>
 </html>
